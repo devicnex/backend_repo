@@ -1,0 +1,157 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id          String    @id @default(uuid())
+  name        String
+  email       String
+  password    String
+  created_at  DateTime? @default(now())
+  updated_at  DateTime? @default(now())
+  bairro      String?
+  cep         String?
+  cidade      String?
+  complemento String?
+  cpfcnpj     String?
+  endereco    String?
+  estado      String?
+  numero      String?
+  telefone    String?
+  status      String?
+  img_usuario String?
+  pets        Pet[]
+
+  @@map("users")
+}
+
+model Category {
+  id         String    @id @default(uuid())
+  name       String
+  created_at DateTime? @default(now())
+  updated_at DateTime? @default(now())
+  products   Product[]
+
+  @@map("categories")
+}
+
+model Product {
+  id          String    @id @default(uuid())
+  name        String
+  price       String
+  description String
+  banner      String
+  created_at  DateTime? @default(now())
+  updated_at  DateTime? @default(now())
+  category_id String
+  items       Item[]
+  category    Category  @relation(fields: [category_id], references: [id])
+
+  @@index([category_id], map: "products_category_id_fkey")
+  @@map("products")
+}
+
+model Order {
+  id         String    @id @default(uuid())
+  table      Int
+  status     Boolean   @default(false)
+  draft      Boolean   @default(true)
+  name       String?
+  created_at DateTime? @default(now())
+  updated_at DateTime? @default(now())
+  items      Item[]
+
+  @@map("orders")
+}
+
+model Item {
+  id         String    @id @default(uuid())
+  amount     Int
+  created_at DateTime? @default(now())
+  updated_at DateTime? @default(now())
+  order_id   String
+  product_id String
+  order      Order     @relation(fields: [order_id], references: [id])
+  product    Product   @relation(fields: [product_id], references: [id])
+
+  @@index([order_id], map: "items_order_id_fkey")
+  @@index([product_id], map: "items_product_id_fkey")
+  @@map("items")
+}
+
+model Pet {
+  id              String   @id @default(uuid())
+  name            String
+  apelido         String
+  data_nascimento DateTime? @default(now())
+  especie         String
+  idade           String
+  meses           String
+  raca            String
+  chip            String
+  sexo            String
+  temperamento    String
+  tamanho         String
+  detalhes        String @db.LongText
+  user_id         String
+  img_perfil      String
+  user            User      @relation(fields: [user_id], references: [id])
+  vacinas         Vacina[]
+  exames          Exame[]
+  blogs           Blog[]
+  @@index([user_id], map: "pets_user_id_fkey")
+  @@map("pets")
+}
+
+model Curiosidade {
+  id       String @id @default(uuid())
+  conteudo String @db.LongText
+
+  @@map("curiosidades")
+}
+
+model Vacina {
+  id             String @id @default(uuid())
+  data_vacinacao String
+  vacina         String
+  clinica        String
+  intervalo      String
+  observacao     String
+  pet_id         String
+  img_lote       String
+  pet            Pet    @relation(fields: [pet_id], references: [id])
+
+  @@index([pet_id], map: "vacinas_pet_id_fkey")
+  @@map("vacinas")
+}
+
+model Exame {
+  id         String    @id @default(uuid())
+  data_exame String @db.VarChar(200)
+  exame      String @db.VarChar(200)
+  clinica    String @db.VarChar(200)
+  observacao String @db.VarChar(200)
+  pet_id     String @db.VarChar(200)
+  img_laudo  String @db.VarChar(200)
+  pet            Pet    @relation(fields: [pet_id], references: [id])
+  @@index([pet_id], map: "exame_pet_id_fkey")
+  @@map("exames")
+}
+
+
+model Blog {
+  id          String  @id @default(uuid())
+  pet_id      String
+  conteudo    String  @db.LongText
+  img_blog    String
+  created_at  DateTime? @default(now())
+  updated_at  DateTime? @default(now())
+  pet       Pet @relation(fields: [pet_id], references: [id])
+  @@index([pet_id], map: "blog_pet_id_fkey")
+  @@map("blog")
+}

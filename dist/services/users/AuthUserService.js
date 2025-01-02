@@ -20,6 +20,7 @@ class AuthUserService {
     execute(_a) {
         return __awaiter(this, arguments, void 0, function* ({ email, password }) {
             console.log(email + password);
+            console.log('DATABASE_URL:', process.env.DATABASE_URL);
             try {
                 // Verifica se o email existe
                 const user = yield prisma_1.default.user.findFirst({

@@ -1,0 +1,13 @@
+# Ignorar todos os arquivos
+*
+
+# Exceto os compilados
+!dist/
+!.next/
+!package.json
+!package-lock.json
+!.env
+!tmp/
+!uploads/
+!upload/
+!dist

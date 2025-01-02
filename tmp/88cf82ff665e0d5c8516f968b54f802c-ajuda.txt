@@ -1,0 +1,50 @@
+ssh icnex@192.168.15.200
+Nex3021*@!
+==
+
+Acesso ao plesk
+dig 
+admin
+b!m3ivnk5_Q0cSZu
+
+==
+
+su -
+Wero7845#
+
+==
+host "DOMINIO AQUI"
+dig -t NS "DOMINIO DO SITE AQUI" 
+
+==
+
+Limpar o cache
+ipconfig /flushdns
+
+==
+
+Base 64
+https://www.base64-image.de/
+
+==
+
+Link para importar agenda
+
+https://agenda.contadores.cnt.br/web/agenda/importacao_agenda
+
+==
+
+React - Icons
+
+https://react-icons.github.io/react-icons/
+
+==
+
+React Bootstrap
+
+https://react-bootstrap.netlify.app/docs/components/accordion
+
+==
+
+
+
