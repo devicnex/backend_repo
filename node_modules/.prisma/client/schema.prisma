@@ -103,7 +103,7 @@ model Pet {
   user            User      @relation(fields: [user_id], references: [id])
   vacinas         Vacina[]
   exames          Exame[]
-  blogs           Blog[]
+  publicacos      Publicacoes[]
   @@index([user_id], map: "pets_user_id_fkey")
   @@map("pets")
 }
@@ -143,15 +143,23 @@ model Exame {
   @@map("exames")
 }
 
+model Publicacoes {
+  id    String @id @default(uuid())
+  pet_id String
+  conteudo String @db.LongText
+  img_blog String
+  created_at DateTime? @default(now())
+  updated_at DateTime? @default(now())
+  pet Pet @relation(fields: [pet_id], references: [id])
+  @@index([pet_id], map: "publicacao_pet_id_fkey")
+  @@map("publicacoes")
+}
 
-model Blog {
-  id          String  @id @default(uuid())
-  pet_id      String
-  conteudo    String  @db.LongText
-  img_blog    String
-  created_at  DateTime? @default(now())
-  updated_at  DateTime? @default(now())
-  pet       Pet @relation(fields: [pet_id], references: [id])
-  @@index([pet_id], map: "blog_pet_id_fkey")
-  @@map("blog")
+model DataDisponivel {
+  id String @id @default(uuid())
+  clinica String 
+  data_servico DateTime? @default(now())
+  horario_servico  String
+
+  @@map("dataDisponivel")
 }
