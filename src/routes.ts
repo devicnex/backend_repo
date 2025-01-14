@@ -23,12 +23,13 @@
     import { DeleExamController }               from "./controllers/pets/DeleteExamController";
     import { UpdateVaccineController }          from "./controllers/pets/UpdateVaccineController";
     import { UpdateExamController }             from "./controllers/pets/UpdateExamController";
-    import { BlogPetController }                from "./controllers/pets/BlogPetController";
-    import { DetailBlogController }             from "./controllers/pets/DetailBlogController";
+    import { PublicacoesPetController }         from "./controllers/pets/PublicacoesPetController";
     import { UpdatePetController }              from "./controllers/pets/UpdatePetController";
-    import { DeleteBlogController }             from "./controllers/pets/DeleteBlogController";
+    import { DeletePubliController }            from "./controllers/pets/DeletePubliController";
     import { UserDeleteController }             from "./controllers/user/UserDeleteController";
-    import { UpdateBlogController }             from "./controllers/pets/UpdateBlogController";
+    import { UpdatePubliController }            from "./controllers/pets/UpdatePubliController";
+    import { DetailPublicacoesController }      from './controllers/pets/DetailPublicacoesController';
+    import { DatasAgendamentosController }      from './controllers/clinicas/DatasAgendamentosController';
     import  uploadConfig                        from './config/multer';
 
     const router = Router();
@@ -82,16 +83,18 @@
 
     router.put('/api/updateexame', isAuthenticated, new UpdateExamController().handle);
 
-    router.post('/api/postBlog', isAuthenticated, upload.single('img_blog'), new BlogPetController().handle);
-
-    router.get('/api/detailBlog', isAuthenticated, new DetailBlogController().handle);
+    router.post('/api/postPublicacao', isAuthenticated, upload.single('img_blog'), new PublicacoesPetController().handle);
 
     router.put('/api/updatePet', isAuthenticated, upload.single('img_perfil'), new UpdatePetController().handle);
 
-    router.delete('/api/deleteBlog', isAuthenticated, new DeleteBlogController().handle);
+    router.delete('/api/deletePubli', isAuthenticated, new DeletePubliController().handle);
 
     router.delete('/api/deleteUser', isAuthenticated, new UserDeleteController().handle);
 
-    router.put('/api/UpdateBlog', isAuthenticated, new UpdateBlogController().handle);
+    router.put('/api/UpdatePublicao', isAuthenticated, new UpdatePubliController().handle);
+
+    router.get('/api/detailPublicacao', isAuthenticated, new DetailPublicacoesController().handle);
+
+    router.post('/api/dataDisponivel', isAuthenticated, new DatasAgendamentosController().handle);
 
     export { router };
