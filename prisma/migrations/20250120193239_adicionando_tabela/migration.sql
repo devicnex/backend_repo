@@ -133,7 +133,7 @@ CREATE TABLE `exames` (
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
-CREATE TABLE `blog` (
+CREATE TABLE `publicacoes` (
     `id` VARCHAR(191) NOT NULL,
     `pet_id` VARCHAR(191) NOT NULL,
     `conteudo` LONGTEXT NOT NULL,
@@ -141,7 +141,53 @@ CREATE TABLE `blog` (
     `created_at` DATETIME(3) NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updated_at` DATETIME(3) NULL DEFAULT CURRENT_TIMESTAMP(3),
 
-    INDEX `blog_pet_id_fkey`(`pet_id`),
+    INDEX `publicacao_pet_id_fkey`(`pet_id`),
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
+CREATE TABLE `agendamentos` (
+    `id` VARCHAR(191) NOT NULL,
+    `pet_id` VARCHAR(191) NOT NULL,
+    `id_horario` VARCHAR(191) NOT NULL,
+    `id_empresa` VARCHAR(191) NOT NULL,
+    `status` INTEGER NOT NULL DEFAULT 1,
+
+    INDEX `agendamento_pet_id_fkey`(`pet_id`),
+    INDEX `agendamento_id_horario_fkey`(`id_horario`),
+    INDEX `agendamento_id_empresa_fkey`(`id_empresa`),
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
+CREATE TABLE `servicos` (
+    `id` VARCHAR(191) NOT NULL,
+    `nome` VARCHAR(191) NOT NULL,
+    `tipo` INTEGER NOT NULL,
+    `status` INTEGER NOT NULL,
+
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
+CREATE TABLE `horarios` (
+    `id` VARCHAR(191) NOT NULL,
+    `tipo` INTEGER NOT NULL,
+    `sub_categoria` VARCHAR(191) NULL,
+    `id_empresa` VARCHAR(191) NOT NULL,
+    `data_servico` DATETIME(3) NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `horario_servico` VARCHAR(191) NOT NULL,
+    `status` INTEGER NOT NULL,
+
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
+CREATE TABLE `empresa` (
+    `id` VARCHAR(191) NOT NULL,
+    `cnpj` VARCHAR(191) NOT NULL,
+    `nome` VARCHAR(191) NOT NULL,
+
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -164,4 +210,13 @@ ALTER TABLE `vacinas` ADD CONSTRAINT `vacinas_pet_id_fkey` FOREIGN KEY (`pet_id`
 ALTER TABLE `exames` ADD CONSTRAINT `exames_pet_id_fkey` FOREIGN KEY (`pet_id`) REFERENCES `pets`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `blog` ADD CONSTRAINT `blog_pet_id_fkey` FOREIGN KEY (`pet_id`) REFERENCES `pets`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE `publicacoes` ADD CONSTRAINT `publicacoes_pet_id_fkey` FOREIGN KEY (`pet_id`) REFERENCES `pets`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `agendamentos` ADD CONSTRAINT `agendamentos_pet_id_fkey` FOREIGN KEY (`pet_id`) REFERENCES `pets`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `agendamentos` ADD CONSTRAINT `agendamentos_id_horario_fkey` FOREIGN KEY (`id_horario`) REFERENCES `horarios`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `agendamentos` ADD CONSTRAINT `agendamentos_id_empresa_fkey` FOREIGN KEY (`id_empresa`) REFERENCES `empresa`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;

@@ -29,8 +29,14 @@
     import { UserDeleteController }             from "./controllers/user/UserDeleteController";
     import { UpdatePubliController }            from "./controllers/pets/UpdatePubliController";
     import { DetailPublicacoesController }      from './controllers/pets/DetailPublicacoesController';
-    import { DatasAgendamentosController }      from './controllers/clinicas/DatasAgendamentosController';
+    import { ServicoController }                from './controllers/clinicas/ServicosController';
+    import { HorarioController }                from './controllers/clinicas/HorariosController';
+    import { BuscarServicoController }          from './controllers/clinicas/BuscarServicoController';
+    import { BuscarHorarioController }          from './controllers/clinicas/BuscarHorarioController';
+    import { AgendamentoController }            from './controllers/clinicas/AgendamentoController';
     import  uploadConfig                        from './config/multer';
+import { CreateEmpresaController } from './controllers/user/CreateEmpresaController';
+import { ChamarAgendamentoController } from './controllers/clinicas/ChamarAgendamentoController';
 
     const router = Router();
 
@@ -95,6 +101,20 @@
 
     router.get('/api/detailPublicacao', isAuthenticated, new DetailPublicacoesController().handle);
 
-    router.post('/api/dataDisponivel', isAuthenticated, new DatasAgendamentosController().handle);
+    router.post('/api/servico', isAuthenticated, new ServicoController().handle);
+
+    router.post('/api/agendarHoraio', isAuthenticated, new HorarioController().handle);
+
+    router.get('/api/buscarServico',  isAuthenticated, new BuscarServicoController().handle);
+
+    router.get('/api/buscarHorario/:tipo/:sub_categoria?', isAuthenticated, new BuscarHorarioController().handle);
+
+    router.post('/api/criarAgendamento', isAuthenticated, new AgendamentoController().handle);
+
+    router.post('/api/cadastrarEmpresa', isAuthenticated, new CreateEmpresaController().handle)
+
+    router.get('/api/chamarAgendamento', isAuthenticated, new ChamarAgendamentoController().handle)
 
     export { router };
+
+    
