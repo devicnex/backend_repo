@@ -4,11 +4,10 @@ import { BuscarHorarioService } from "../../services/clinicas/BuscarHorarioServi
 
     class BuscarHorarioController {
         async handle(req: Request, res: Response) {
-            const { tipo, sub_categoria } = req.params; // Subcategoria adicionada como parâmetro
+            const { tipo, sub_categoria } = req.params;
         
             const tipo_selecionado = Number(tipo);
-            const subCategoriaSelecionada = sub_categoria || null; // Garante que seja null se não for fornecido
-        
+            const subCategoriaSelecionada = sub_categoria || null;
             if (isNaN(tipo_selecionado)) {
                 return res.status(400).json({ error: "O parâmetro 'tipo' deve ser um número válido." });
             }

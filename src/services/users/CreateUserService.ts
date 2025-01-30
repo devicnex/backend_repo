@@ -15,6 +15,7 @@ interface UserRequest {
     numero?: string;
     telefone?: string;
     status?: string;
+    pushToken?: string;
 }
 
 class CreateUserService {
@@ -31,7 +32,9 @@ class CreateUserService {
         estado = '', 
         numero = '', 
         telefone = '', 
-        status = '' 
+        status = '',
+        pushToken='',
+
     }: UserRequest) {
         if (!email) {
             throw new Error('Email Incorreto');
@@ -65,6 +68,7 @@ class CreateUserService {
                     numero,
                     telefone,
                     status,
+                    pushToken,
                 },
                 select: {
                     id: true,

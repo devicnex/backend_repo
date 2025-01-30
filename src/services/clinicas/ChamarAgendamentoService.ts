@@ -1,8 +1,13 @@
 import prismaClient from "../../prisma";
 
 class ChamarAgendamentoService {
-    async execute() {
+    async execute(user_id: string) {
         const agendamentos = await prismaClient.agendamentos.findMany({
+            where: {
+                pets: {
+                    user_id: user_id
+                }
+            },
             include: {
                 pets: true, // Inclui os dados do pet relacionados
                 horarios: true, // Inclui os dados do horário relacionado

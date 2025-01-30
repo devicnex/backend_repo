@@ -2,6 +2,7 @@ import express, { Request, Response, NextFunction } from 'express';
 import 'express-async-errors';
 import cors from 'cors';
 import { router } from './routes';
+import { iniciarCron } from './cron/index'
 
 const app = express();
 app.use(express.json());
@@ -27,7 +28,7 @@ app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
 
 
 
-
+iniciarCron();
 const isProduction = process.env.NODE_ENV === 'production';
 const port = 3333;
 

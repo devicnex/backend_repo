@@ -2,7 +2,10 @@ import prismaClient from "../../prisma";
 
 class BuscarHorarioService {
     async execute(tipo: number, sub_categoria: string | null) {
-        const whereClause: any = { tipo };
+        const whereClause: any = { 
+            tipo,
+            status: 1
+        };
 
         if (sub_categoria) {
             whereClause.sub_categoria = sub_categoria;

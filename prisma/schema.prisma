@@ -25,6 +25,7 @@ model User {
   telefone    String?
   status      String?
   img_usuario String?
+  pushToken   String?
   pets        Pet[]
 
   @@map("users")

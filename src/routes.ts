@@ -34,9 +34,11 @@
     import { BuscarServicoController }          from './controllers/clinicas/BuscarServicoController';
     import { BuscarHorarioController }          from './controllers/clinicas/BuscarHorarioController';
     import { AgendamentoController }            from './controllers/clinicas/AgendamentoController';
+    import { AtualizacaoHorarioController }     from './controllers/status/AtualizacaoStatusHorarioController';
+    import { StatusAgendamentoController }      from './controllers/status/StatusAgendamentoController';
     import  uploadConfig                        from './config/multer';
-import { CreateEmpresaController } from './controllers/user/CreateEmpresaController';
-import { ChamarAgendamentoController } from './controllers/clinicas/ChamarAgendamentoController';
+    import { CreateEmpresaController }          from './controllers/user/CreateEmpresaController';
+    import { ChamarAgendamentoController }      from './controllers/clinicas/ChamarAgendamentoController';
 
     const router = Router();
 
@@ -111,10 +113,12 @@ import { ChamarAgendamentoController } from './controllers/clinicas/ChamarAgenda
 
     router.post('/api/criarAgendamento', isAuthenticated, new AgendamentoController().handle);
 
-    router.post('/api/cadastrarEmpresa', isAuthenticated, new CreateEmpresaController().handle)
+    router.post('/api/cadastrarEmpresa', isAuthenticated, new CreateEmpresaController().handle);
 
-    router.get('/api/chamarAgendamento', isAuthenticated, new ChamarAgendamentoController().handle)
+    router.get('/api/chamarAgendamento', isAuthenticated, new ChamarAgendamentoController().handle);
+
+    router.put('/api/atualizaStatusHora/:id/status', isAuthenticated, new AtualizacaoHorarioController().handle);
+
+    router.put('/api/atualizaStatusAgendamento/:id/status', isAuthenticated, new StatusAgendamentoController().handle);
 
     export { router };
-
-    
