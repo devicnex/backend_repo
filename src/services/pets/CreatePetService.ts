@@ -11,7 +11,7 @@ interface PetRequest {
     sexo: string,                   
     temperamento: string,                   
     tamanho: string,                   
-    detalhes: string,                   
+    detalhes?: string,                   
     img_perfil: string,                   
     user_id: string,                   
 }
@@ -19,7 +19,7 @@ interface PetRequest {
 class CreatePetService {
     async execute({name, apelido, especie, idade, meses, raca, chip, sexo, temperamento, tamanho, detalhes, img_perfil, user_id}: PetRequest) {
         
-        if (!name || !apelido || !especie || !idade || !meses || !raca || !chip || !sexo || !temperamento || !tamanho || !detalhes || !img_perfil || !user_id) {
+        if (!name || !apelido || !especie || !idade || !meses || !raca || !chip || !sexo || !temperamento || !tamanho || !img_perfil || !user_id) {
             throw new Error("Algum campo está vazio, verifique...");
         }
 
@@ -29,13 +29,13 @@ class CreatePetService {
                 apelido,
                 especie,
                 idade,
-                meses,
+                meses, 
                 raca,
                 chip,
                 sexo,
                 temperamento,
                 tamanho,
-                detalhes,
+                detalhes: detalhes || null,
                 img_perfil,
                 user_id
             },

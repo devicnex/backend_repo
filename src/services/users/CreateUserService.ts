@@ -15,7 +15,6 @@ interface UserRequest {
     numero?: string;
     telefone?: string;
     status?: string;
-    pushToken?: string;
 }
 
 class CreateUserService {
@@ -33,7 +32,6 @@ class CreateUserService {
         numero = '', 
         telefone = '', 
         status = '',
-        pushToken='',
 
     }: UserRequest) {
         if (!email) {
@@ -68,7 +66,6 @@ class CreateUserService {
                     numero,
                     telefone,
                     status,
-                    pushToken,
                 },
                 select: {
                     id: true,

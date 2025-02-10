@@ -18,7 +18,6 @@ class CreateUserController {
             numero = '', 
             telefone = '', 
             status = '',
-            pushToken = '',
         } = req.body;
         
         const createUserService = new CreateUserService();
@@ -37,7 +36,6 @@ class CreateUserController {
             numero,
             telefone,
             status,
-            pushToken
         });
         
         return res.json(user);

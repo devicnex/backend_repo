@@ -25,8 +25,8 @@ model User {
   telefone    String?
   status      String?
   img_usuario String?
-  pushToken   String?
   pets        Pet[]
+  expo_token ExpoToken[]
 
   @@map("users")
 }
@@ -98,7 +98,7 @@ model Pet {
   sexo            String
   temperamento    String
   tamanho         String
-  detalhes        String @db.LongText
+  detalhes        String? @db.LongText
   user_id         String
   img_perfil      String
   user            User      @relation(fields: [user_id], references: [id])
@@ -207,4 +207,13 @@ model Empresa {
   agendamentos Agendamentos[]
 
   @@map("empresa")
+}
+
+model ExpoToken {
+  id String @id @default(uuid())
+  user_id String @unique
+  token String @unique
+  created_at DateTime? @default(now())
+  user            User      @relation(fields: [user_id], references: [id])
+  @@map("expo_token")
 }

@@ -9,9 +9,9 @@ class ChamarAgendamentoService {
                 }
             },
             include: {
-                pets: true, // Inclui os dados do pet relacionados
-                horarios: true, // Inclui os dados do horário relacionado
-                empresas: true, // Inclui os dados do serviço relacionado
+                pets: true,
+                horarios: true,
+                empresas: true,
                 servicos: true,
             },
         });

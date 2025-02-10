@@ -39,6 +39,9 @@
     import  uploadConfig                        from './config/multer';
     import { CreateEmpresaController }          from './controllers/user/CreateEmpresaController';
     import { ChamarAgendamentoController }      from './controllers/clinicas/ChamarAgendamentoController';
+    import { BuscarHorarioAllController }       from './controllers/clinicas/BuscarHorariosAll';
+    import { OneAgendamentoController }         from './controllers/clinicas/OneAgendamento';
+    import { ExpoTokenController }              from './cron/Token/ExpoTokenController';
 
     const router = Router();
 
@@ -117,8 +120,16 @@
 
     router.get('/api/chamarAgendamento', isAuthenticated, new ChamarAgendamentoController().handle);
 
+    router.get('/api/chamarAgendamentoOne/:id', isAuthenticated, new OneAgendamentoController().handle);
+
     router.put('/api/atualizaStatusHora/:id/status', isAuthenticated, new AtualizacaoHorarioController().handle);
 
     router.put('/api/atualizaStatusAgendamento/:id/status', isAuthenticated, new StatusAgendamentoController().handle);
+
+    router.get('/api/all_horarios', isAuthenticated, new BuscarHorarioAllController().handle);
+
+    router.post('/api/registerToken', isAuthenticated, ExpoTokenController.registerToken);
+    
+    router.get('/api/tokens', isAuthenticated, ExpoTokenController.getTokens);
 
     export { router };
