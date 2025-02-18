@@ -41,11 +41,16 @@
     import { ChamarAgendamentoController }      from './controllers/clinicas/ChamarAgendamentoController';
     import { BuscarHorarioAllController }       from './controllers/clinicas/BuscarHorariosAll';
     import { OneAgendamentoController }         from './controllers/clinicas/OneAgendamento';
-    import { ExpoTokenController }              from './cron/Token/ExpoTokenController';
+    import { BuscarTokenController }            from './controllers/notification/buscaTokenController';
+    import { RegisterTokenController }          from './controllers/notification/registerTokenController';
+    import { TokenAgendamentoController }       from './controllers/notification/ChamarAgendamentoToken';
+    import { SendNotificationController }       from './cron/enviarNotificacao'
 
     const router = Router();
 
     const upload = multer(uploadConfig.upload("./tmp"));
+
+    const buscarTokenController = new BuscarTokenController();
     
 
     router.post('/api/users', new CreateUserController().handle);
@@ -128,8 +133,12 @@
 
     router.get('/api/all_horarios', isAuthenticated, new BuscarHorarioAllController().handle);
 
-    router.post('/api/registerToken', isAuthenticated, ExpoTokenController.registerToken);
+    router.post('/api/registerToken', isAuthenticated, new RegisterTokenController().handle);
     
-    router.get('/api/tokens', isAuthenticated, ExpoTokenController.getTokens);
+    router.get('/api/tokens/:user_id', isAuthenticated, (req, res) => buscarTokenController.getTokenByUserId(req, res));
+
+    router.get('/api/tokenAgendamento', isAuthenticated, new TokenAgendamentoController().handle);
+
+    router.post("/api/sendNotification", new SendNotificationController().handle);
 
     export { router };

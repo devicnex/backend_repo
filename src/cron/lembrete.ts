@@ -1,85 +1,111 @@
-import cron from 'node-cron';
-import { BuscarHorarioAllService } from "../services/clinicas/BuscarHorariosAll";
+import cron from "node-cron";
+import { TokenAgendamentoService } from "../services/notification/ChamarAgendamentoToken";
+import { BuscarTokenService } from "../services/notification/buscaTokenService";
+import axios from "axios";
 
-// Função para adicionar zero à esquerda (caso o número tenha apenas um dígito)
-const adicionarZeroEsquerda = (num: number): string => (num < 10 ? "0" + num : num.toString());
+//  Função para converter data `dd/mm/aaaa` para `Date`
+const converterParaData = (dataString: string, horario: string): Date => {
+    if (!dataString || !horario) {
+        throw new Error("Data ou horário inválido!");
+    }
 
-// Função para formatar datas sem GMT e sem textos desnecessários
-const formatarData = (data: Date): string => {
-    const ano = data.getFullYear();
-    const mes = adicionarZeroEsquerda(data.getMonth() + 1);
-    const dia = adicionarZeroEsquerda(data.getDate());
-    const horas = adicionarZeroEsquerda(data.getHours());
-    const minutos = adicionarZeroEsquerda(data.getMinutes());
-    const segundos = adicionarZeroEsquerda(data.getSeconds());
+    const [dia, mes, ano] = dataString.split("/").map(Number);
+    const [horas, minutos] = horario.split(":").map(Number);
 
-    return `${ano}-${mes}-${dia} ${horas}:${minutos}`;
+    return new Date(ano, mes - 1, dia, horas, minutos, 0);
 };
 
+//  Tipos de lembretes e suas regras
+const LEMBRETES = [
+    { tipo: "5dias", tempoAntes: 5 * 24 * 60 * 60 * 1000, mensagem: "Seu exame está marcado para daqui a 5 dias!" },
+    { tipo: "1dia", tempoAntes: 24 * 60 * 60 * 1000, mensagem: "Seu exame é amanhã! Prepare-se." },
+    { tipo: "60min", tempoAntes: 60 * 60 * 1000, mensagem: "Seu exame está prestes a começar. Não se atrase!" }
+];
 
-export const lembreteCron = cron.schedule('* * * * * ', async () => {
+export const lembreteCron = cron.schedule("* * * * *", async () => {
     try {
-        const buscarHorarioService = new BuscarHorarioAllService();
-        const response = await buscarHorarioService.execute(); 
-        
-        if (!Array.isArray(response) || response.length === 0) {
-            console.log("Nenhum horário encontrado ou resposta inválida:", response);
-            return;
-        }
+        console.log("Executando cron para buscar agendamentos...");
 
-        console.log(response);
-        
+        const tokenService = new BuscarTokenService();
+        const agendamentoService = new TokenAgendamentoService();
         const agora = new Date();
-        const agoraUTC = new Date(agora.getTime() - agora.getTimezoneOffset() * 60000);
-        const agoraFormatado = formatarData(agoraUTC);
-        console.log(`🕒 Agora (ISO): ${agoraUTC.toISOString()}`);
 
-        const horariosParaNotificar = response.filter(horario => {
-            if (!horario.data_servico || !horario.horario_servico) return false;
+        // Itera sobre cada tipo de lembrete
+        for (const { tipo, tempoAntes, mensagem } of LEMBRETES) {
+            // console.log(`Buscando agendamentos para o lembrete "${tipo}"`);
 
-            // Criar a data corretamente sem erro de conversão
-            const dataServico = new Date(horario.data_servico);
+            //  Buscar agendamentos para esse tipo de notificação
+            const agendamentos = await agendamentoService.execute(tipo);
 
-            // Verifica se a data é válida antes de continuar
-            if (isNaN(dataServico.getTime())) {
-                console.error(`❌ Data Serviço inválida após conversão: ${horario.data_servico} (ID: ${horario.id})`);
-                return false;
+            if (!Array.isArray(agendamentos) || agendamentos.length === 0) {
+                // console.log(`Nenhum agendamento precisa do lembrete "${tipo}".`);
+                continue;
             }
 
-            // Define corretamente as horas e minutos sem alterar o fuso horário
-            const [horas, minutos] = horario.horario_servico.split(':').map(Number);
-            dataServico.setUTCHours(horas, minutos, 0, 0);
+            // console.log(` ${agendamentos.length} agendamento(s) encontrados para "${tipo}".`);
 
-            // Ajusta para o fuso horário local
-            const dataServicoLocal = new Date(dataServico.getTime());
-            const dataServicoFormatado = formatarData(dataServicoLocal);
-            console.log(`🔍 Data Serviço (ISO): ${dataServicoLocal.toISOString()}`);
+            for (const agendamento of agendamentos) {
+                // console.log(` Processando agendamento ID: ${agendamento.id}`);
 
-            // Calcular notificação 10 min antes
-            const tempoNotificacao = new Date(dataServicoLocal.getTime() - 10 * 60 * 1000);
+                if (!agendamento.data_agendamento || !agendamento.horario_agendamento || !agendamento.pets?.user_id) {
+                    console.warn(` Agendamento ID ${agendamento.id} incompleto. Pulando...`);
+                    continue;
+                }
 
+                //  Convertendo a data corretamente
+                let dataAgendamento: Date;
+                try {
+                    dataAgendamento = converterParaData(
+                        String(agendamento.data_agendamento),
+                        String(agendamento.horario_agendamento)
+                    );
+                } catch (error) {
+                    console.error(`Erro ao converter data do agendamento ID ${agendamento.id}:`, error);
+                    continue;
+                }
 
+                // console.log(`Data e Hora do Agendamento ajustada: ${dataAgendamento}`);
 
+                //  Criar a data de envio da notificação
+                const tempoNotificacao = new Date(dataAgendamento.getTime() - tempoAntes);
+                // console.log(`Notificação "${tipo}" será enviada em: ${tempoNotificacao}`);
 
+                //  Comparação pelo timestamp (evita problemas de formatação)
+                if (agora.getTime() >= tempoNotificacao.getTime() && agora.getTime() < dataAgendamento.getTime()) {
+                    // console.log(`[NOTIFICAÇÃO] Enviando "${tipo}" para agendamento ID ${agendamento.id}`);
 
+                    const tokenUsuario = await tokenService.getTokenByUserId(agendamento.pets.user_id);
+                    if (!tokenUsuario || !tokenUsuario.token) {
+                        console.warn(`Usuário ID ${agendamento.pets.user_id} não tem token registrado. Pulando...`);
+                        continue;
+                    }
 
-            const tempoNotificacaoFormatado = formatarData(tempoNotificacao);
+                    // console.log(` Token do Usuário encontrado: ${tokenUsuario.token}`);
 
-            const notificacaoSemSegundos = tempoNotificacaoFormatado.slice(0, 16);
-            const servicoSemSegundos = dataServicoFormatado.slice(0, 16);
+                    try {
+                        const response = await axios.post("https://petland.vet.br/api/sendNotification", {
+                            token: tokenUsuario.token,
+                            title: "Lembrete de Consulta",
+                            body: mensagem
+                        });
 
-            const date_formated = agoraFormatado >= notificacaoSemSegundos && agoraFormatado < servicoSemSegundos;
-            console.log(date_formated);
-            return date_formated;
-        });
+                        if (response.status === 200) {
+                            // console.log(` Notificação "${tipo}" enviada com sucesso para ${tokenUsuario.token}`);
 
-        if (horariosParaNotificar.length > 0) {
-            horariosParaNotificar.forEach(horario => {
-                console.log(`🔔 Enviando notificação para ID: ${horario.id} - ${horario.sub_categoria || 'Sem categoria'} às ${horario.horario_servico}`);
-            });
+                            // 🔥 Marcar notificação como enviada
+                            await agendamentoService.marcarNotificacaoEnviada(agendamento.id, tipo);
+                        } else {
+                            console.warn(`Erro ao enviar notificação "${tipo}":`, response.data);
+                        }
+                    } catch (error) {
+                        console.error(` Erro ao chamar API de notificação:`, error);
+                    }
+                } else {
+                    // console.log(`Ainda não é hora de enviar "${tipo}" para ID ${agendamento.id}`);
+                }
+            }
         }
-
     } catch (error) {
-        console.error("Erro ao buscar horários:", error);
+        console.error("Erro ao processar lembretes:", error);
     }
 });

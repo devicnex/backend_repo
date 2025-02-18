@@ -26,7 +26,8 @@ model User {
   status      String?
   img_usuario String?
   pets        Pet[]
-  expo_token ExpoToken[]
+  expo_token  ExpoToken[]
+  user_id     Agendamentos[]
 
   @@map("users")
 }
@@ -164,12 +165,18 @@ model Agendamentos {
   id_horario     String
   id_empresa     String
   id_servico     String
+  user_id        String
+  data_agendamento String
+  horario_agendamento String
   status         Int       @default(1)
+  notificacoes_enviadas String  @default("")
   pets            Pet       @relation(fields: [pet_id], references: [id])    
+  users           User      @relation(fields: [user_id], references: [id])
   horarios        Horarios  @relation(fields: [id_horario], references: [id])
   empresas        Empresa   @relation(fields: [id_empresa], references: [id])
   servicos        Servicos  @relation(fields: [id_servico], references: [id])
   @@index([pet_id], map: "agendamento_pet_id_fkey")
+  @@index([user_id], map: "agendamento_user_id_fkeyge")
   @@index([id_horario], map: "agendamento_id_horario_fkey")
   @@index([id_empresa], map: "agendamento_id_empresa_fkey")
   @@index([id_servico], map: "agendamento_id_servico_fket")
@@ -192,7 +199,7 @@ model Horarios {
   tipo Int
   sub_categoria String?
   id_empresa String
-  data_servico DateTime? @default(now())
+  data_servico String
   horario_servico String
   status Int
   agendamentos Agendamentos[]
@@ -212,7 +219,7 @@ model Empresa {
 model ExpoToken {
   id String @id @default(uuid())
   user_id String @unique
-  token String @unique
+  token String
   created_at DateTime? @default(now())
   user            User      @relation(fields: [user_id], references: [id])
   @@map("expo_token")

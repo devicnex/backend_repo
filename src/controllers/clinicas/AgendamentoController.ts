@@ -7,7 +7,10 @@ class AgendamentoController {
             pet_id,
             id_horario,
             id_empresa,
-            id_servico
+            id_servico,
+            data_agendamento,
+            horario_agendamento,
+            user_id
         } = req.body
 
         const agendar = new AgendamentoService();
@@ -16,7 +19,10 @@ class AgendamentoController {
                 pet_id,
                 id_horario,
                 id_empresa,
-                id_servico
+                id_servico,
+                data_agendamento,
+                horario_agendamento,
+                user_id,
             });
             return res.json(agendamento)
         } catch (err) {
