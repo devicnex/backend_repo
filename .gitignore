@@ -2,3 +2,4 @@ dist
 dist.zip
 prisma.zip
 tmp
+node_modules

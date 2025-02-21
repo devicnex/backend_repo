@@ -44,7 +44,7 @@
     import { BuscarTokenController }            from './controllers/notification/buscaTokenController';
     import { RegisterTokenController }          from './controllers/notification/registerTokenController';
     import { TokenAgendamentoController }       from './controllers/notification/ChamarAgendamentoToken';
-    import { SendNotificationController }       from './cron/enviarNotificacao'
+    import { SendNotificationController }       from './cron/enviarNotificacao';
 
     const router = Router();
 

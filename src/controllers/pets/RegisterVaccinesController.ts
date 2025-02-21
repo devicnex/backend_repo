@@ -14,7 +14,9 @@ class RegisterVaccinesController {
             clinica, 
             intervalo,
             observacao,
-            pet_id } =  req.body;
+            pet_id,
+            user_id 
+        } =  req.body;
 
             console.log("Resultado do body: " , req.body)
 
@@ -37,6 +39,7 @@ class RegisterVaccinesController {
                 img_lote,
                 observacao,
                 pet_id,
+                user_id,
             }) 
 
             return res.json(pet);

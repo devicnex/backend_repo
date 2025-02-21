@@ -1,21 +1,16 @@
 import prismaClient from "../../prisma";
 
 export class TokenAgendamentoService {
-    async execute(tipoNotificacao: string) {
+    async buscarTodos() {
         try {
-            const agendamentos = await prismaClient.agendamentos.findMany({
+            return await prismaClient.agendamentos.findMany({
                 where: {
-                    status: 1,
-                    NOT: {
-                        notificacoes_enviadas: { contains: tipoNotificacao } // Apenas se NÃO tiver essa notificação
-                    }
+                    status: 1
                 },
                 include: {
                     pets: true
                 }
             });
-
-            return agendamentos;
         } catch (error) {
             console.error("❌ Erro ao buscar agendamentos:", error);
             throw error;
@@ -34,10 +29,16 @@ export class TokenAgendamentoService {
                 return;
             }
 
+            const notificacoes = agendamento.notificacoes_enviadas ? agendamento.notificacoes_enviadas.split(",") : [];
+
+            if (notificacoes.includes(tipoNotificacao)) {
+                console.warn(`⚠️ Notificação "${tipoNotificacao}" já foi enviada para o agendamento ${agendamentoId}. Pulando...`);
+                return;
+            }
+
             // 🔥 Adiciona a nova notificação à string existente
-            const novasNotificacoes = agendamento.notificacoes_enviadas
-                ? `${agendamento.notificacoes_enviadas},${tipoNotificacao}`
-                : tipoNotificacao;
+            notificacoes.push(tipoNotificacao);
+            const novasNotificacoes = notificacoes.join(",");
 
             await prismaClient.agendamentos.update({
                 where: { id: agendamentoId },

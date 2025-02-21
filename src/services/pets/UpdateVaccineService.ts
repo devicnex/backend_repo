@@ -3,6 +3,7 @@ import prismaClient from "../../prisma";
 interface VaccineUpdate{
     id: string,
     data_vacinacao: string,
+    proxima_aplicacao: string,
     vacina: string,
     clinica: string,
     intervalo: string, 
@@ -10,9 +11,9 @@ interface VaccineUpdate{
 }
 
 class UpdateVaccineService {
-    async execute({id, data_vacinacao, vacina, clinica, intervalo, observacao}: VaccineUpdate) {
+    async execute({id, data_vacinacao, vacina, clinica, intervalo, observacao, proxima_aplicacao}: VaccineUpdate) {
         try{
-            const vaccineAlreadyExists = prismaClient.vacina.findFirst({
+            const vaccineAlreadyExists =  await prismaClient.vacina.findFirst({
                 where: {
                     id
                 }
@@ -20,11 +21,11 @@ class UpdateVaccineService {
             if(!vaccineAlreadyExists){
                 throw Error("Vacina não encontrada!");
             } else {
-                const updateVaccine = prismaClient.vacina.update({
+                const updateVaccine = await prismaClient.vacina.update({
                     where: {
                         id: id
                     }, data: {
-                        data_vacinacao, vacina, clinica, intervalo, observacao
+                        data_vacinacao, vacina, clinica, intervalo, observacao, proxima_aplicacao
                     }
                 })
                 return updateVaccine;

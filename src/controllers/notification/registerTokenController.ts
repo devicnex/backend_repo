@@ -4,16 +4,16 @@ import { RegisterTokenService } from '../../services/notification/registerTokenS
 export class RegisterTokenController {
     async handle(req: Request, res: Response) {
         try{
-            console.log("SALVANDO O TOKEN!")
+            // console.log("SALVANDO O TOKEN!")
             const {user_id, token} = req.body;
 
             const salvandoToken = new RegisterTokenService();
-            console.log("Salvando Token AQUIII: " + salvandoToken)
+            // console.log("Salvando Token AQUIII: " + salvandoToken)
             const salvatoken = await salvandoToken.execute({
                 user_id,
                 token
             });
-            console.log("SalvaToken ação do execute! ! ! ! ! : " + salvatoken)
+            // console.log("SalvaToken ação do execute! ! ! ! ! : " + salvatoken)
 
             return res.json(salvatoken)
         } catch {

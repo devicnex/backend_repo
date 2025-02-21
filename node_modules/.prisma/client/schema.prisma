@@ -28,6 +28,7 @@ model User {
   pets        Pet[]
   expo_token  ExpoToken[]
   user_id     Agendamentos[]
+  vacinas     Vacina[]
 
   @@map("users")
 }
@@ -127,9 +128,13 @@ model Vacina {
   intervalo      String
   observacao     String
   pet_id         String
+  user_id        String
   img_lote       String
-  pet            Pet    @relation(fields: [pet_id], references: [id])
-
+  proxima_aplicacao String?
+  notificacoes_enviadas String @default("")
+  pets            Pet    @relation(fields: [pet_id], references: [id])
+  user           User   @relation(fields: [user_id], references: [id])
+  @@index([user_id], map: "vacinas_user_id_fkey")
   @@index([pet_id], map: "vacinas_pet_id_fkey")
   @@map("vacinas")
 }
