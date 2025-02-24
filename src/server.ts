@@ -50,7 +50,10 @@
     const sslOptions = {
         key: fs.readFileSync(path.join(certPath, 'private.key')),
         cert: fs.readFileSync(path.join(certPath, 'certificate.crt')),
-        ca: fs.readFileSync(path.join(certPath, 'ca_bundle.crt')),
+        ca: [
+            fs.readFileSync(path.join(certPath, 'ca_bundle.crt')),
+            fs.readFileSync(path.join(certPath, 'cloudflare-origin-ca.pem'))
+        ]
     };
 
     https.createServer(sslOptions, app).listen(port, () => {
