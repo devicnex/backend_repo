@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import fetch from "node-fetch";
+import admin from "../config/firebaseAdmin";  // 🔹 Importa a configuração do Firebase Admin
 
 export class SendNotificationController {
     async handle(req: Request, res: Response) {
@@ -9,30 +9,25 @@ export class SendNotificationController {
             return res.status(400).json({ error: "Token, título e corpo são obrigatórios." });
         }
 
+        // 🔹 Monta a notificação
         const notificationPayload = {
-            to: token,
-            sound: "default",
-            title,
-            body,
+            token,
+            notification: {
+                title,
+                body,
+            },
             data: { type: "lembrete" }
         };
 
         try {
-            const response = await fetch("https://exp.host/--/api/v2/push/send", {
-                method: "POST",
-                headers: {
-                    Accept: "application/json",
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify(notificationPayload)
-            });
+            // 🔹 Envia a notificação pelo Firebase Cloud Messaging (FCM)
+            const response = await admin.messaging().send(notificationPayload);
+            console.log("✅ Notificação enviada:", response);
 
-            const result = await response.json();
-            console.log("✅ Notificação enviada:", result);
-            return res.status(200).json({ success: true, result });
+            return res.status(200).json({ success: true, response });
         } catch (error) {
             console.error("🚨 Erro ao enviar notificação:", error);
-            return res.status(500).json({ error: "Erro ao enviar notificação" });
+            return res.status(500).json({ error: "Erro ao enviar notificação", details: error });
         }
     }
 }
