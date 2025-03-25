@@ -203,7 +203,7 @@ model Horarios {
   id String @id @default(uuid())
   tipo Int
   sub_categoria String?
-  id_empresa String
+  id_clinica String
   data_servico String
   horario_servico String
   status Int
@@ -228,4 +228,25 @@ model ExpoToken {
   created_at DateTime? @default(now())
   user            User      @relation(fields: [user_id], references: [id])
   @@map("expo_token")
+}
+
+model Clinica {
+  id String @id @default(uuid())
+  responsavel String
+  razaoSocial String
+  password String
+  email String
+  telefone String
+  cnjp String
+  cep String
+  endereco String
+  numero String
+  uf String
+  cidade String
+  complemento String?
+  img_clinica String?
+  status         Int       @default(1)
+  created_at  DateTime? @default(now())
+  updated_at  DateTime? @default(now())
+  @@map("clinicas")
 }

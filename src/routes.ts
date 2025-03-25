@@ -36,8 +36,6 @@
     import { AgendamentoController }            from './controllers/clinicas/AgendamentoController';
     import { AtualizacaoHorarioController }     from './controllers/status/AtualizacaoStatusHorarioController';
     import { StatusAgendamentoController }      from './controllers/status/StatusAgendamentoController';
-    import  uploadConfig                        from './config/multer';
-    import { CreateEmpresaController }          from './controllers/user/CreateEmpresaController';
     import { ChamarAgendamentoController }      from './controllers/clinicas/ChamarAgendamentoController';
     import { BuscarHorarioAllController }       from './controllers/clinicas/BuscarHorariosAll';
     import { OneAgendamentoController }         from './controllers/clinicas/OneAgendamento';
@@ -45,6 +43,13 @@
     import { RegisterTokenController }          from './controllers/notification/registerTokenController';
     import { TokenAgendamentoController }       from './controllers/notification/ChamarAgendamentoToken';
     import { SendNotificationController }       from './cron/enviarNotificacao';
+    import { CadastradoClinicaController } from './clinica-petland/controllers/user/CadastroClinicaController';
+    import { AuthClinicaController } from './clinica-petland/controllers/auth/AuthClinicaController';
+    import { DetailClinicaController } from './clinica-petland/controllers/user/DetailClinicaController';
+    import { GetHorarioController } from './clinica-petland/controllers/horarios/GetHorarioController';
+
+
+    import  uploadConfig                        from './config/multer';
 
     const router = Router();
 
@@ -121,8 +126,6 @@
 
     router.post('/api/criarAgendamento', isAuthenticated, new AgendamentoController().handle);
 
-    router.post('/api/cadastrarEmpresa', isAuthenticated, new CreateEmpresaController().handle);
-
     router.get('/api/chamarAgendamento', isAuthenticated, new ChamarAgendamentoController().handle);
 
     router.get('/api/chamarAgendamentoOne/:id', isAuthenticated, new OneAgendamentoController().handle);
@@ -140,5 +143,16 @@
     router.get('/api/tokenAgendamento', isAuthenticated, new TokenAgendamentoController().handle);
 
     router.post("/api/sendNotification", new SendNotificationController().handle);
+
+
+    // Clinica Petland 
+
+    router.post("/api/cadastroClinica", new CadastradoClinicaController().handle);
+    
+    router.post('/api/clinicaSession', new AuthClinicaController().handle);
+
+    router.get('/api/clinica', isAuthenticated, new DetailClinicaController().handle);
+
+    router.get('/api/horarios', isAuthenticated, new GetHorarioController().handle);
 
     export { router };

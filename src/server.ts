@@ -20,6 +20,7 @@
 
 
     const uploadsPath = path.join(__dirname, '..', 'tmp');
+    // const uploadsPath = path.join(__dirname, 'tmp'); DEU ERRADO 
 
     console.log("🔹 Servindo arquivos estáticos de:", uploadsPath);
 

@@ -35,7 +35,7 @@ const converterParaData = (dataString: string): Date => {
 };
 
 // 🔹 Cron para verificar e enviar notificações das prevenções
-export const prevencaoLembrete = cron.schedule("*/10 * * * * *", async () => {
+export const prevencaoLembrete = cron.schedule("* * * * *", async () => {
     try {
         console.log("🔄 Executando cron para lembretes de prevenções...");
 
