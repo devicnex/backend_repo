@@ -3,17 +3,13 @@ import { BuscarTokenService } from "../services/notification/buscaTokenService";
 import { PrevencoesService } from "../services/notification/ChamarPrevencoes";
 import axios from "axios";
 
-// 🔹 Configuração dos lembretes e tempos antes da aplicação
 const LEMBRETES = [
     { tipo: "5dias", diasAntes: 5, mensagem: "Atenção! A prevenção vence em 5 dias!" },
     { tipo: "1dia", diasAntes: 1, mensagem: "Está chegando a hora de renovar! A prevenção vence amanhã." }
 ];
 
-// ✅ Função para converter data no formato dd/mm/aaaa ou dd-mm-aaaa para Date
 const converterParaData = (dataString: string): Date => {
-    if (!dataString) {
-        throw new Error("Data inválida!");
-    }
+    if (!dataString) throw new Error("Data inválida!");
 
     let dia, mes, ano;
     if (dataString.includes("/")) {
@@ -33,8 +29,7 @@ const converterParaData = (dataString: string): Date => {
     return dataConvertida;
 };
 
-// 🔹 Cron para verificar e enviar notificações das prevenções
-export const prevencaoLembrete = cron.schedule("* * * * *", async () => {
+export const prevencaoLembrete = cron.schedule("0 9 * * *", async () => {
     try {
         console.log("🔄 Executando cron para lembretes de prevenções...");
 
@@ -50,7 +45,7 @@ export const prevencaoLembrete = cron.schedule("* * * * *", async () => {
         }
 
         for (const prevencao of prevencoes) {
-            if (!prevencao.proxima_aplicacao || !prevencao.pets || !prevencao.pets.user_id) {
+            if (!prevencao.proxima_aplicacao || !prevencao.pets?.user_id) {
                 console.warn(`⚠️ Prevenção ID ${prevencao.id} incompleta. Pulando...`);
                 continue;
             }
@@ -59,31 +54,28 @@ export const prevencaoLembrete = cron.schedule("* * * * *", async () => {
             try {
                 dataPrevencao = converterParaData(String(prevencao.proxima_aplicacao));
             } catch (error) {
-                console.error(`❌ Erro ao converter data da vacinação ID ${prevencao.id}:`, error);
+                console.error(`❌ Erro ao converter data da prevenção ID ${prevencao.id}:`, error);
                 continue;
             }
 
-            const diferencaEmMs = dataPrevencao.getTime() - agora.getTime();
-            const diferencaEmDias = diferencaEmMs / (1000 * 60 * 60 * 24);
+            // Normaliza as datas para 00:00h (considerar apenas a data, sem horário)
+            const agoraNormalizado = new Date(agora.getFullYear(), agora.getMonth(), agora.getDate());
+            const dataPrevencaoNormalizada = new Date(dataPrevencao.getFullYear(), dataPrevencao.getMonth(), dataPrevencao.getDate());
+
+            // Calcula a diferença em dias exatos (inteiros)
+            const diferencaEmDias = Math.round((dataPrevencaoNormalizada.getTime() - agoraNormalizado.getTime()) / (1000 * 60 * 60 * 24));
 
             for (const lembrete of LEMBRETES) {
-                const janelaMinima = lembrete.diasAntes - 0.01; // ~14 minutos antes
-                const janelaMaxima = lembrete.diasAntes + 0.01; // ~14 minutos depois
-
-                if (diferencaEmDias >= janelaMinima && diferencaEmDias <= janelaMaxima) {
-                    // Verificar se a notificação já foi enviada
+                if (diferencaEmDias === lembrete.diasAntes) {
                     const jaEnviada = await prevencoesService.verificarNotificacaoEnviada(prevencao.id, lembrete.tipo);
-
                     if (jaEnviada) {
-                        console.log(`⚠️ Notificação "${lembrete.tipo}" já enviada para ID ${prevencao.id}. Pulando envio.`);
+                        console.log(`⚠️ Notificação "${lembrete.tipo}" já enviada para ID ${prevencao.id}.`);
                         continue;
                     }
 
-                    console.log(`📲 Preparando envio da notificação "${lembrete.tipo}" para ID ${prevencao.id}`);
-
                     const tokenUsuario = await tokenService.getTokenByUserId(prevencao.pets.user_id);
-                    if (!tokenUsuario || !tokenUsuario.token) {
-                        console.warn(`⚠️ Usuário ID ${prevencao.pets.user_id} não tem token registrado. Pulando...`);
+                    if (!tokenUsuario?.token) {
+                        console.warn(`⚠️ Usuário ID ${prevencao.pets.user_id} sem token. Pulando...`);
                         continue;
                     }
 
@@ -98,7 +90,7 @@ export const prevencaoLembrete = cron.schedule("* * * * *", async () => {
                             console.log(`✅ Notificação "${lembrete.tipo}" enviada para ID ${prevencao.id}.`);
                             await prevencoesService.registrarNotificacao(prevencao.id, lembrete.tipo);
                         } else {
-                            console.warn(`⚠️ Erro ao enviar notificação "${lembrete.tipo}":`, response.data);
+                            console.warn(`⚠️ Erro ao enviar notificação "${lembrete.tipo}" para ID ${prevencao.id}:`, response.data);
                         }
                     } catch (error) {
                         console.error("❌ Erro ao chamar API de notificação:", error);
