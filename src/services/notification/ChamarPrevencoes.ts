@@ -17,7 +17,7 @@ export class PrevencoesService {
     async registrarNotificacao(id: string, tipoNotificacao: string) {
         try {
             const prevencao = await prismaClient.vacina.findUnique({
-                where: { id: id },
+                where: { id },
                 select: { notificacoes_enviadas: true }
             });
 
@@ -26,24 +26,45 @@ export class PrevencoesService {
                 return;
             }
 
-            const notificacoes = prevencao.notificacoes_enviadas ? prevencao.notificacoes_enviadas.split(",") : [];
+            const notificacoes = prevencao.notificacoes_enviadas
+                ? prevencao.notificacoes_enviadas.split(",")
+                : [];
 
             if (notificacoes.includes(tipoNotificacao)) {
-                console.warn(`⚠️ Notificação "${tipoNotificacao}" já foi enviada para prevenção ID ${id}. Pulando...`);
+                console.warn(`⚠️ Notificação "${tipoNotificacao}" já foi enviada para prevenção ID ${id}.`);
                 return;
             }
 
             notificacoes.push(tipoNotificacao);
-            const novasNotificacoes = notificacoes.join(",");
 
             await prismaClient.vacina.update({
-                where: { id: id },
-                data: { notificacoes_enviadas: novasNotificacoes }
+                where: { id },
+                data: { notificacoes_enviadas: notificacoes.join(",") }
             });
 
             console.log(`✅ Prevenção ID ${id} marcada como notificada (${tipoNotificacao}).`);
         } catch (error) {
             console.error(`❌ Erro ao atualizar notificação para prevenção ID ${id}:`, error);
+        }
+    }
+
+    // ✅ Método novo para verificar se já enviou notificação
+    async verificarNotificacaoEnviada(id: string, tipoNotificacao: string): Promise<boolean> {
+        try {
+            const prevencao = await prismaClient.vacina.findUnique({
+                where: { id },
+                select: { notificacoes_enviadas: true }
+            });
+
+            if (!prevencao || !prevencao.notificacoes_enviadas) {
+                return false;
+            }
+
+            const notificacoes = prevencao.notificacoes_enviadas.split(",");
+            return notificacoes.includes(tipoNotificacao);
+        } catch (error) {
+            console.error(`❌ Erro ao verificar notificação para prevenção ID ${id}:`, error);
+            return false;
         }
     }
 }

@@ -5,8 +5,8 @@ import axios from "axios";
 
 // 🔹 Configuração dos lembretes e tempos antes da aplicação
 const LEMBRETES = [
-    { tipo: "5dias", tempoAntes: 5 * 24 * 60 * 60 * 1000, mensagem: "Atenção! A prevenção vence em 5 dias!" },
-    { tipo: "1dia", tempoAntes: 1 * 24 * 60 * 60 * 1000, mensagem: "Está chegando a hora de renovar! A prevenção vence amanhã." }
+    { tipo: "5dias", diasAntes: 5, mensagem: "Atenção! A prevenção vence em 5 dias!" },
+    { tipo: "1dia", diasAntes: 1, mensagem: "Está chegando a hora de renovar! A prevenção vence amanhã." }
 ];
 
 // ✅ Função para converter data no formato dd/mm/aaaa ou dd-mm-aaaa para Date
@@ -30,7 +30,6 @@ const converterParaData = (dataString: string): Date => {
         throw new Error(`❌ Erro ao converter data: ${dataString}`);
     }
 
-    console.log(`📆 Data convertida com sucesso: ${dataConvertida}`);
     return dataConvertida;
 };
 
@@ -43,15 +42,12 @@ export const prevencaoLembrete = cron.schedule("* * * * *", async () => {
         const prevencoesService = new PrevencoesService();
         const agora = new Date();
 
-        // ✅ Buscar todas as prevenções que ainda não venceram
         const prevencoes = await prevencoesService.buscarTodasPrevencoes();
 
         if (!Array.isArray(prevencoes) || prevencoes.length === 0) {
             console.log("⚠️ Nenhuma prevenção encontrada.");
             return;
         }
-
-        console.log(`✅ ${prevencoes.length} prevenções encontradas.`);
 
         for (const prevencao of prevencoes) {
             if (!prevencao.proxima_aplicacao || !prevencao.pets || !prevencao.pets.user_id) {
@@ -67,47 +63,47 @@ export const prevencaoLembrete = cron.schedule("* * * * *", async () => {
                 continue;
             }
 
-            console.log(`📅 Prevenção ID ${prevencao.id} → Data: ${dataPrevencao.toLocaleDateString()} | Agora: ${agora.toLocaleDateString()}`);
-
             const diferencaEmMs = dataPrevencao.getTime() - agora.getTime();
-            const diferencaEmDias = diferencaEmMs / (1000 * 60 * 60 * 24); // Converte para dias
+            const diferencaEmDias = diferencaEmMs / (1000 * 60 * 60 * 24);
 
-            let lembreteSelecionado = null;
+            for (const lembrete of LEMBRETES) {
+                const janelaMinima = lembrete.diasAntes - 0.01; // ~14 minutos antes
+                const janelaMaxima = lembrete.diasAntes + 0.01; // ~14 minutos depois
 
-            if (diferencaEmDias >= 4.9 && diferencaEmDias <= 5.1) { // 5 dias antes
-                lembreteSelecionado = LEMBRETES.find(l => l.tipo === "5dias");
-            } else if (diferencaEmDias >= 0.9 && diferencaEmDias <= 1.1) { // 1 dia antes
-                lembreteSelecionado = LEMBRETES.find(l => l.tipo === "1dia");
-            }
+                if (diferencaEmDias >= janelaMinima && diferencaEmDias <= janelaMaxima) {
+                    // Verificar se a notificação já foi enviada
+                    const jaEnviada = await prevencoesService.verificarNotificacaoEnviada(prevencao.id, lembrete.tipo);
 
-            if (!lembreteSelecionado) {
-                console.log(`🕒 Nenhuma notificação precisa ser enviada para ID ${prevencao.id}`);
-                continue;
-            }
+                    if (jaEnviada) {
+                        console.log(`⚠️ Notificação "${lembrete.tipo}" já enviada para ID ${prevencao.id}. Pulando envio.`);
+                        continue;
+                    }
 
-            console.log(`📲 Preparando envio da notificação "${lembreteSelecionado.tipo}" para ID ${prevencao.id}`);
+                    console.log(`📲 Preparando envio da notificação "${lembrete.tipo}" para ID ${prevencao.id}`);
 
-            const tokenUsuario = await tokenService.getTokenByUserId(prevencao.pets.user_id);
-            if (!tokenUsuario || !tokenUsuario.token) {
-                console.warn(`⚠️ Usuário ID ${prevencao.pets.user_id} não tem token registrado. Pulando...`);
-                continue;
-            }
+                    const tokenUsuario = await tokenService.getTokenByUserId(prevencao.pets.user_id);
+                    if (!tokenUsuario || !tokenUsuario.token) {
+                        console.warn(`⚠️ Usuário ID ${prevencao.pets.user_id} não tem token registrado. Pulando...`);
+                        continue;
+                    }
 
-            try {
-                const response = await axios.post("https://petland.vet.br/api/sendNotification", {
-                    token: tokenUsuario.token,
-                    title: "Lembrete de Prevenção",
-                    body: lembreteSelecionado.mensagem
-                });
+                    try {
+                        const response = await axios.post("https://petland.vet.br/api/sendNotification", {
+                            token: tokenUsuario.token,
+                            title: "Lembrete de Prevenção",
+                            body: lembrete.mensagem
+                        });
 
-                if (response.status === 200) {
-                    console.log(`✅ Notificação "${lembreteSelecionado.tipo}" enviada para ID ${prevencao.id}.`);
-                    await prevencoesService.registrarNotificacao(prevencao.id, lembreteSelecionado.tipo);
-                } else {
-                    console.warn(`⚠️ Erro ao enviar notificação "${lembreteSelecionado.tipo}":`, response.data);
+                        if (response.status === 200) {
+                            console.log(`✅ Notificação "${lembrete.tipo}" enviada para ID ${prevencao.id}.`);
+                            await prevencoesService.registrarNotificacao(prevencao.id, lembrete.tipo);
+                        } else {
+                            console.warn(`⚠️ Erro ao enviar notificação "${lembrete.tipo}":`, response.data);
+                        }
+                    } catch (error) {
+                        console.error("❌ Erro ao chamar API de notificação:", error);
+                    }
                 }
-            } catch (error) {
-                console.error("❌ Erro ao chamar API de notificação:", error);
             }
         }
     } catch (error) {
