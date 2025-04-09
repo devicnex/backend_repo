@@ -47,6 +47,7 @@
     import { AuthClinicaController } from './clinica-petland/controllers/auth/AuthClinicaController';
     import { DetailClinicaController } from './clinica-petland/controllers/user/DetailClinicaController';
     import { GetHorarioController } from './clinica-petland/controllers/horarios/GetHorarioController';
+    import { CadastroVeterinarioController } from './clinica-petland/controllers/veterinarios/CadastroVeterinarioController';
 
 
     import  uploadConfig                        from './config/multer';
@@ -154,5 +155,7 @@
     router.get('/api/clinica', isAuthenticated, new DetailClinicaController().handle);
 
     router.get('/api/horarios', isAuthenticated, new GetHorarioController().handle);
+
+    router.post('/api/cadastroVeterinario', isAuthenticated, new CadastroVeterinarioController().handle);
 
     export { router };

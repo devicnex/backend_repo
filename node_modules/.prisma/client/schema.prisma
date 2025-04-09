@@ -249,4 +249,21 @@ model Clinica {
   created_at  DateTime? @default(now())
   updated_at  DateTime? @default(now())
   @@map("clinicas")
+  veterinarios Veterinarios[]
+}
+
+model Veterinarios {
+  id String @id @default(uuid())
+  nome String
+  email String
+  telefone String
+  crmv String
+  cpf String
+  clinica_id String
+  status         Int       @default(1)
+  created_at  DateTime? @default(now())
+  updated_at  DateTime? @default(now())
+  clinica Clinica @relation(fields: [clinica_id], references: [id])
+  
+  @@map("veterinarios")
 }
