@@ -13,20 +13,41 @@ interface VeterinarioRequest {
 class CadastroVeterinarioService {
 
     async execute({ nome, email, telefone, crmv, cpf, clinica_id, status }: VeterinarioRequest ) {
-        const veterinarioVerificaExiste = await prismaClient.veterinarios.findFirst({
+        const verificaCrmvExiste = await prismaClient.veterinarios.findFirst({
             where: {
                 crmv: crmv,
+            },
+        })
+
+        const verificaCpfExiste = await prismaClient.veterinarios.findFirst({
+            where: {
                 cpf: cpf,
             },
         })
 
-        if (veterinarioVerificaExiste) {
-            throw new Error('CRMV ou CPF já cadastrado!')
+        const ultimo = await prismaClient.veterinarios.findFirst({
+            orderBy: {
+            seq_id: 'desc'
+            },
+            select: {
+            seq_id: true
+            }
+        });
+        
+        const proximoSeqId = (ultimo?.seq_id || 0) + 1;
+
+        if (verificaCrmvExiste) {
+            throw new Error('CRMV já cadastrado!')
+        }
+
+        if (verificaCpfExiste) {
+            throw new Error('CPF já cadastrado!')
         }
         
         try {
             const veterinario = await prismaClient.veterinarios.create({
                 data: {
+                    seq_id: proximoSeqId,
                     nome,
                     email,
                     telefone,
@@ -37,6 +58,7 @@ class CadastroVeterinarioService {
                 },
                 select: {
                     id: true,
+                    seq_id: true,
                     nome: true,
                     email: true,
                     telefone: true,

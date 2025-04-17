@@ -1,4 +1,4 @@
-import prismaClient from "../../prisma";
+import prismaClient from "../../../prisma";
 
 class BuscarHorarioService {
     async execute(tipo: number, sub_categoria: string | null) {
@@ -17,6 +17,11 @@ class BuscarHorarioService {
 
         return horario;
     }
+
 }
 
+
+
 export { BuscarHorarioService };
+
+

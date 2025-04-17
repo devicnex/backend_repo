@@ -11,7 +11,7 @@ class ChamarAgendamentoService {
             include: {
                 pets: true,
                 horarios: true,
-                empresas: true,
+                clinicas: true,
                 servicos: true,
             },
         });

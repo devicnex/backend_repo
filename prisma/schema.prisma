@@ -30,6 +30,7 @@ model User {
   user_id     Agendamentos[]
   vacinas     Vacina[]
 
+
   @@map("users")
 }
 
@@ -168,22 +169,22 @@ model Agendamentos {
   id             String    @id @default(uuid())
   pet_id         String
   id_horario     String
-  id_empresa     String
+  id_clinica     String
   id_servico     String
   user_id        String
   data_agendamento String
   horario_agendamento String
   status         Int       @default(1)
   notificacoes_enviadas String  @default("")
-  pets            Pet       @relation(fields: [pet_id], references: [id])    
+  pets            Pet       @relation(fields: [pet_id], references: [id])
   users           User      @relation(fields: [user_id], references: [id])
   horarios        Horarios  @relation(fields: [id_horario], references: [id])
-  empresas        Empresa   @relation(fields: [id_empresa], references: [id])
+  clinicas        Clinica   @relation(fields: [id_clinica], references: [id])
   servicos        Servicos  @relation(fields: [id_servico], references: [id])
   @@index([pet_id], map: "agendamento_pet_id_fkey")
   @@index([user_id], map: "agendamento_user_id_fkeyge")
   @@index([id_horario], map: "agendamento_id_horario_fkey")
-  @@index([id_empresa], map: "agendamento_id_empresa_fkey")
+  @@index([id_clinica], map: "agendamento_id_clinica_fkey")
   @@index([id_servico], map: "agendamento_id_servico_fket")
   @@map("agendamentos")
 }
@@ -201,12 +202,15 @@ model Servicos {
 
 model Horarios {
   id String @id @default(uuid())
+  seq_id Int @unique
   tipo Int
   sub_categoria String?
   id_clinica String
   data_servico String
   horario_servico String
   status Int
+  id_veterinario String
+  veterinario Veterinarios @relation(fields: [id_veterinario], references: [id])
   agendamentos Agendamentos[]
   
   @@map("horarios")
@@ -216,7 +220,6 @@ model Empresa {
   id String @id @default(uuid())
   cnpj String
   nome String
-  agendamentos Agendamentos[]
 
   @@map("empresa")
 }
@@ -250,10 +253,12 @@ model Clinica {
   updated_at  DateTime? @default(now())
   @@map("clinicas")
   veterinarios Veterinarios[]
+  agendamentos Agendamentos[]
 }
 
 model Veterinarios {
   id String @id @default(uuid())
+  seq_id Int @unique
   nome String
   email String
   telefone String
@@ -264,6 +269,7 @@ model Veterinarios {
   created_at  DateTime? @default(now())
   updated_at  DateTime? @default(now())
   clinica Clinica @relation(fields: [clinica_id], references: [id])
+  horarios Horarios[]
   
   @@map("veterinarios")
 }

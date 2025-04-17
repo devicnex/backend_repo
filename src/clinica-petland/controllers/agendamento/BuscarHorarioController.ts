@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { BuscarHorarioService } from "../../services/clinicas/BuscarHorarioService";
+import { BuscarHorarioService } from "../../services/agendamento/BuscarHorarioService";
 
 
     class BuscarHorarioController {

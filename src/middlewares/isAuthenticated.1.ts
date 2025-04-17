@@ -20,6 +20,7 @@ export function isAuthenticated(req: Request, res: Response, next: NextFunction)
 
         // Recupera id e coloca dentro da variável user_id
         req.user_id = sub;
+        req.clinica_id = sub;
 
         return next();
     } catch (err) {

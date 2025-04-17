@@ -1,9 +1,9 @@
 import { Request, Response } from "express";
-import { HorarioService } from "../../services/clinicas/HorariosService";
+import { HorarioService } from "../../services/agendamento/HorariosService";
 
 class HorarioController {
     async handle(req: Request, res: Response) {
-        const { data_servico, horario_servico, tipo, sub_categoria, id_clinica, status } = req.body;
+        const { data_servico, horario_servico, tipo, sub_categoria, id_clinica, id_veterinario, status } = req.body;
 
         const horario = new HorarioService();
         try {
@@ -13,6 +13,7 @@ class HorarioController {
                 tipo,
                 sub_categoria: sub_categoria || null,
                 id_clinica,
+                id_veterinario,
                 status,
             });
             return res.json(agendamento);

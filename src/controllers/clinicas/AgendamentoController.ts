@@ -6,7 +6,7 @@ class AgendamentoController {
         const {
             pet_id,
             id_horario,
-            id_empresa,
+            id_clinica,
             id_servico,
             data_agendamento,
             horario_agendamento,
@@ -18,7 +18,7 @@ class AgendamentoController {
             const agendamento = await agendar.execute({
                 pet_id,
                 id_horario,
-                id_empresa,
+                id_clinica,
                 id_servico,
                 data_agendamento,
                 horario_agendamento,

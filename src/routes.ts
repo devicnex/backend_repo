@@ -30,25 +30,27 @@
     import { UpdatePubliController }            from "./controllers/pets/UpdatePubliController";
     import { DetailPublicacoesController }      from './controllers/pets/DetailPublicacoesController';
     import { ServicoController }                from './controllers/clinicas/ServicosController';
-    import { HorarioController }                from './controllers/clinicas/HorariosController';
+    import { HorarioController }                from './clinica-petland/controllers/agendamento/HorariosController';
     import { BuscarServicoController }          from './controllers/clinicas/BuscarServicoController';
-    import { BuscarHorarioController }          from './controllers/clinicas/BuscarHorarioController';
+    import { BuscarHorarioController }          from './clinica-petland/controllers/agendamento/BuscarHorarioController';
     import { AgendamentoController }            from './controllers/clinicas/AgendamentoController';
     import { AtualizacaoHorarioController }     from './controllers/status/AtualizacaoStatusHorarioController';
     import { StatusAgendamentoController }      from './controllers/status/StatusAgendamentoController';
     import { ChamarAgendamentoController }      from './controllers/clinicas/ChamarAgendamentoController';
-    import { BuscarHorarioAllController }       from './controllers/clinicas/BuscarHorariosAll';
+    import { BuscarHorarioAllController }       from './clinica-petland/controllers/agendamento/BuscarHorariosAll';
     import { OneAgendamentoController }         from './controllers/clinicas/OneAgendamento';
     import { BuscarTokenController }            from './controllers/notification/buscaTokenController';
     import { RegisterTokenController }          from './controllers/notification/registerTokenController';
     import { TokenAgendamentoController }       from './controllers/notification/ChamarAgendamentoToken';
     import { SendNotificationController }       from './cron/enviarNotificacao';
-    import { CadastradoClinicaController } from './clinica-petland/controllers/user/CadastroClinicaController';
-    import { AuthClinicaController } from './clinica-petland/controllers/auth/AuthClinicaController';
-    import { DetailClinicaController } from './clinica-petland/controllers/user/DetailClinicaController';
-    import { GetHorarioController } from './clinica-petland/controllers/horarios/GetHorarioController';
-    import { CadastroVeterinarioController } from './clinica-petland/controllers/veterinarios/CadastroVeterinarioController';
-
+    import { CadastradoClinicaController }      from './clinica-petland/controllers/user/CadastroClinicaController';    
+    import { AuthClinicaController }            from './clinica-petland/controllers/auth/AuthClinicaController';
+    import { DetailClinicaController }          from './clinica-petland/controllers/user/DetailClinicaController';
+    import { GetHorarioController }             from './clinica-petland/controllers/horarios/GetHorarioController';
+    import { CadastroVeterinarioController }    from './clinica-petland/controllers/veterinarios/CadastroVeterinarioController';
+    import { InfosVeterinarioController }       from './clinica-petland/controllers/veterinarios/InfosVeterinarioController';
+    import { StatusVeterinarioController }      from './clinica-petland/controllers/veterinarios/StatusVeterinarioController';
+    import { PutHorarioController }             from './clinica-petland/controllers/horarios/PutHorarioController'
 
     import  uploadConfig                        from './config/multer';
 
@@ -57,6 +59,7 @@
     const upload = multer(uploadConfig.upload("./tmp"));
 
     const buscarTokenController = new BuscarTokenController();
+    const buscarHorarioAllController = new BuscarHorarioAllController();
     
 
     router.post('/api/users', new CreateUserController().handle);
@@ -119,11 +122,7 @@
 
     router.post('/api/servico', isAuthenticated, new ServicoController().handle);
 
-    router.post('/api/agendarHoraio', isAuthenticated, new HorarioController().handle);
-
     router.get('/api/buscarServico',  isAuthenticated, new BuscarServicoController().handle);
-
-    router.get('/api/buscarHorario/:tipo/:sub_categoria?', isAuthenticated, new BuscarHorarioController().handle);
 
     router.post('/api/criarAgendamento', isAuthenticated, new AgendamentoController().handle);
 
@@ -134,8 +133,6 @@
     router.put('/api/atualizaStatusHora/:id/status', isAuthenticated, new AtualizacaoHorarioController().handle);
 
     router.put('/api/atualizaStatusAgendamento/:id/status', isAuthenticated, new StatusAgendamentoController().handle);
-
-    router.get('/api/all_horarios', isAuthenticated, new BuscarHorarioAllController().handle);
 
     router.post('/api/registerToken', isAuthenticated, new RegisterTokenController().handle);
     
@@ -158,4 +155,21 @@
 
     router.post('/api/cadastroVeterinario', isAuthenticated, new CadastroVeterinarioController().handle);
 
+    router.get('/api/infosVeterinario', isAuthenticated, new InfosVeterinarioController().handle);
+
+    router.put('/api/statusVeterinario/:id/status', isAuthenticated, new StatusVeterinarioController().handle);
+
+    router.post('/api/agendarHoraio', isAuthenticated, new HorarioController().handle);
+
+    router.get('/api/buscarHorario/:tipo/:sub_categoria?', isAuthenticated, new BuscarHorarioController().handle);
+
+    router.get('/api/all_horarios', isAuthenticated, new BuscarHorarioAllController().handle);
+
+    router.get('/api/BuscarAgendamentos', isAuthenticated, (req, res) =>
+        buscarHorarioAllController.handleAgendamentos(req, res)
+    );
+
+    router.put('/api/updateHora', isAuthenticated, new PutHorarioController().handle)
+
+    
     export { router };
