@@ -210,6 +210,7 @@ model Horarios {
   horario_servico String
   status Int
   id_veterinario String
+  clinicas    Clinica @relation(fields: [id_clinica], references: [id])
   veterinario Veterinarios @relation(fields: [id_veterinario], references: [id])
   agendamentos Agendamentos[]
   
@@ -254,6 +255,7 @@ model Clinica {
   @@map("clinicas")
   veterinarios Veterinarios[]
   agendamentos Agendamentos[]
+  horarios Horarios[]
 }
 
 model Veterinarios {

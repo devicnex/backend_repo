@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import { AtualizacaoStatusHorarioService } from "../../services/status/AtualizacaoStatusHorarioService";
 
 class AtualizacaoHorarioController {
-    async handle(req: Request, res: Response){
+    async handle(req: Request, res: Response) {
         const { id } = req.params;
         const { status } = req.body;
 
@@ -15,7 +15,14 @@ class AtualizacaoHorarioController {
                 return res.status(404).json({ error: "Horário não encontrado ou já está no status desejado." });
             }
 
-            const mensagem = status === 2 ? "Horário reservado com sucesso" : "Horário disponível novamente";
+            const mensagens: { [key: number]: string } = {
+                1: "Horário disponível novamente",
+                2: "Horário reservado com sucesso",
+                3: "Horário cancelado/expirado com sucesso",
+                4: "Consulta realizada com sucesso"
+            };
+
+            const mensagem = mensagens[status] || "Status atualizado com sucesso.";
 
             return res.json({ message: mensagem });
         } catch (err) {
