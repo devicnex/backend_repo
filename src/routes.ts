@@ -53,6 +53,7 @@
     import { PutHorarioController }             from './clinica-petland/controllers/horarios/PutHorarioController'
 
     import  uploadConfig                        from './config/multer';
+import { UpdateVeterinarioController } from './clinica-petland/controllers/veterinarios/UpdateVeterinarioController';
 
     const router = Router();
 
@@ -170,6 +171,8 @@
     );
 
     router.put('/api/updateHora', isAuthenticated, new PutHorarioController().handle)
+
+    router.put('/api/updateVeterinario', isAuthenticated, new UpdateVeterinarioController().handle)
 
     
     export { router };
