@@ -51,9 +51,10 @@
     import { InfosVeterinarioController }       from './clinica-petland/controllers/veterinarios/InfosVeterinarioController';
     import { StatusVeterinarioController }      from './clinica-petland/controllers/veterinarios/StatusVeterinarioController';
     import { PutHorarioController }             from './clinica-petland/controllers/horarios/PutHorarioController'
+    import { UpdateVeterinarioController } from './clinica-petland/controllers/veterinarios/UpdateVeterinarioController';
+    import { EnvioFormularioController } from './clinica-petland/controllers/email/EnvioFormulario';
 
     import  uploadConfig                        from './config/multer';
-import { UpdateVeterinarioController } from './clinica-petland/controllers/veterinarios/UpdateVeterinarioController';
 
     const router = Router();
 
@@ -61,6 +62,7 @@ import { UpdateVeterinarioController } from './clinica-petland/controllers/veter
 
     const buscarTokenController = new BuscarTokenController();
     const buscarHorarioAllController = new BuscarHorarioAllController();
+    const envioFormularioController = new EnvioFormularioController();
     
 
     router.post('/api/users', new CreateUserController().handle);
@@ -173,6 +175,8 @@ import { UpdateVeterinarioController } from './clinica-petland/controllers/veter
     router.put('/api/updateHora', isAuthenticated, new PutHorarioController().handle)
 
     router.put('/api/updateVeterinario', isAuthenticated, new UpdateVeterinarioController().handle)
+
+    router.post('/api/envioFormulario', envioFormularioController.handle)
 
     
     export { router };

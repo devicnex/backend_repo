@@ -1,30 +1,28 @@
 import prismaClient from "../../prisma";
 
 class StatusAgendamentoSerive {
-    async execute(id: string , status: number){
-
-        if(status !== 0 && status !== 1){
-            throw new Error("Status inválido!")
+    async execute(id: string, status: number) {
+        if (![0, 1, 2].includes(status)) {
+            throw new Error("Status inválido!");
         }
 
-        try{
-            const atualizaStatus = await prismaClient.agendamentos.updateMany({
+        try {
+            const atualizaStatus = await prismaClient.agendamentos.update({
                 where: {
-                    id: id,
-                    status: status === 0 ? 1 : 0,
+                    id: id
                 },
                 data: {
                     status: status
                 }
             });
 
-            return atualizaStatus.count > 0;
+            return !!atualizaStatus;
 
-        } catch (error){
+        } catch (error) {
             console.log("Erro ao atualizar status: " + error);
             throw new Error("Erro ao atualizar status");
         }
     }
 }
 
-export { StatusAgendamentoSerive}
+export { StatusAgendamentoSerive };

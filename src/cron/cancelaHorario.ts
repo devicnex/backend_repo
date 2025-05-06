@@ -41,7 +41,7 @@ export const cancelaHorarioCron = cron.schedule("* * * * *", async () => {
             where: {
                 id: { in: expirados.map(h => h.id) }
             },
-            data: { status: 3 }
+            data: { status: 0 }
         });
 
         console.log(`✅ ${result.count} horário(s) atualizado(s) para CANCELADO.`);

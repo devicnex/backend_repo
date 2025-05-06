@@ -16,6 +16,7 @@ class AtualizacaoHorarioController {
             }
 
             const mensagens: { [key: number]: string } = {
+                0: "Horário expirado sem agendamento",
                 1: "Horário disponível novamente",
                 2: "Horário reservado com sucesso",
                 3: "Horário cancelado/expirado com sucesso",
