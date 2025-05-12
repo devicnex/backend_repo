@@ -12,7 +12,11 @@ class BuscarHorarioService {
         }
 
         const horario = await prismaClient.horarios.findMany({
-            where: whereClause
+            where: whereClause,
+            include: {
+                clinicas: true,
+                veterinario: true,
+            }
         });
 
         return horario;
