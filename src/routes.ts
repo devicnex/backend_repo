@@ -1,60 +1,65 @@
-    import { Router }                           from 'express';
-    import multer                               from 'multer';    
-    import { CreateUserController }             from './controllers/user/CreateUserController';
-    import { AuthUserController   }             from './controllers/user/AuthUserController';
-    import { UpdateUserController }             from './controllers/user/UpdateUserController';
-    import { DetailUserController }             from './controllers/user/DetailUserController';
-    import { DogapiController     }             from './controllers/api/DogapiController';
-    import { ForgotPassword       }             from './controllers/api/ForgotPassword';
-    import { isAuthenticated      }             from './middlewares/isAuthenticated.1';
-    import { CreatePetController  }             from './controllers/pets/CreatePetController';
-    import { DetailPetController  }             from  './controllers/pets/DetailPetController';
-    import { DetailPetOneController }           from  './controllers/pets/DetailPetOneController';
-    import { DeletePetController  }             from  './controllers/pets/DeletePetController';
-    import { CuriosidadeController }            from './controllers/api/CuriosidadeController';
-    import { RegisterVaccinesController }       from './controllers/pets/RegisterVaccinesController';
-    import { DetailVaccinesController }         from './controllers/pets/DetailVaccinesController';
-    import { UpdateUserDataController }         from './controllers/user/UpdateUserDataController';
-    import { RegisterExamController }           from './controllers/pets/RegisterExamController';
-    import { DetailExamController }             from "./controllers/pets/DetailExamController";
-    import { DetailPetVaccinesOneController }   from "./controllers/pets/DetailPetVaccinesOneController";
-    import { DetailPetExamOneController }       from "./controllers/pets/DetailPetExamOneController";
-    import { DeleteVaccineController }          from "./controllers/pets/DeleteVaccineController";
-    import { DeleExamController }               from "./controllers/pets/DeleteExamController";
-    import { UpdateVaccineController }          from "./controllers/pets/UpdateVaccineController";
-    import { UpdateExamController }             from "./controllers/pets/UpdateExamController";
-    import { PublicacoesPetController }         from "./controllers/pets/PublicacoesPetController";
-    import { UpdatePetController }              from "./controllers/pets/UpdatePetController";
-    import { DeletePubliController }            from "./controllers/pets/DeletePubliController";
-    import { UserDeleteController }             from "./controllers/user/UserDeleteController";
-    import { UpdatePubliController }            from "./controllers/pets/UpdatePubliController";
-    import { DetailPublicacoesController }      from './controllers/pets/DetailPublicacoesController';
-    import { ServicoController }                from './controllers/clinicas/ServicosController';
-    import { HorarioController }                from './clinica-petland/controllers/agendamento/HorariosController';
-    import { BuscarServicoController }          from './controllers/clinicas/BuscarServicoController';
-    import { BuscarHorarioController }          from './clinica-petland/controllers/agendamento/BuscarHorarioController';
-    import { AgendamentoController }            from './controllers/clinicas/AgendamentoController';
-    import { AtualizacaoHorarioController }     from './controllers/status/AtualizacaoStatusHorarioController';
-    import { StatusAgendamentoController }      from './controllers/status/StatusAgendamentoController';
-    import { ChamarAgendamentoController }      from './controllers/clinicas/ChamarAgendamentoController';
-    import { BuscarHorarioAllController }       from './clinica-petland/controllers/agendamento/BuscarHorariosAll';
-    import { OneAgendamentoController }         from './controllers/clinicas/OneAgendamento';
-    import { BuscarTokenController }            from './controllers/notification/buscaTokenController';
-    import { RegisterTokenController }          from './controllers/notification/registerTokenController';
-    import { TokenAgendamentoController }       from './controllers/notification/ChamarAgendamentoToken';
-    import { SendNotificationController }       from './cron/enviarNotificacao';
-    import { CadastradoClinicaController }      from './clinica-petland/controllers/user/CadastroClinicaController';    
-    import { AuthClinicaController }            from './clinica-petland/controllers/auth/AuthClinicaController';
-    import { DetailClinicaController }          from './clinica-petland/controllers/user/DetailClinicaController';
-    import { GetHorarioController }             from './clinica-petland/controllers/horarios/GetHorarioController';
-    import { CadastroVeterinarioController }    from './clinica-petland/controllers/veterinarios/CadastroVeterinarioController';
-    import { InfosVeterinarioController }       from './clinica-petland/controllers/veterinarios/InfosVeterinarioController';
-    import { StatusVeterinarioController }      from './clinica-petland/controllers/veterinarios/StatusVeterinarioController';
-    import { PutHorarioController }             from './clinica-petland/controllers/horarios/PutHorarioController'
-    import { UpdateVeterinarioController } from './clinica-petland/controllers/veterinarios/UpdateVeterinarioController';
-    import { EnvioFormularioController } from './clinica-petland/controllers/email/EnvioFormulario';
-
-    import  uploadConfig                        from './config/multer';
+    import { Router }                               from 'express';
+    import multer                                   from 'multer';    
+    import { CreateUserController }                 from './controllers/user/CreateUserController';
+    import { AuthUserController   }                 from './controllers/user/AuthUserController';
+    import { UpdateUserController }                 from './controllers/user/UpdateUserController';
+    import { DetailUserController }                 from './controllers/user/DetailUserController';
+    import { DogapiController     }                 from './controllers/api/DogapiController';
+    import { ForgotPassword       }                 from './controllers/api/ForgotPassword';
+    import { isAuthenticated      }                 from './middlewares/isAuthenticated.1';
+    import { CreatePetController  }                 from './controllers/pets/CreatePetController';
+    import { DetailPetController  }                 from  './controllers/pets/DetailPetController';
+    import { DetailPetOneController }               from  './controllers/pets/DetailPetOneController';
+    import { DeletePetController  }                 from  './controllers/pets/DeletePetController';
+    import { CuriosidadeController }                from './controllers/api/CuriosidadeController';
+    import { RegisterVaccinesController }           from './controllers/pets/RegisterVaccinesController';
+    import { DetailVaccinesController }             from './controllers/pets/DetailVaccinesController';
+    import { UpdateUserDataController }             from './controllers/user/UpdateUserDataController';
+    import { RegisterExamController }               from './controllers/pets/RegisterExamController';
+    import { DetailExamController }                 from "./controllers/pets/DetailExamController";
+    import { DetailPetVaccinesOneController }       from "./controllers/pets/DetailPetVaccinesOneController";
+    import { DetailPetExamOneController }           from "./controllers/pets/DetailPetExamOneController";
+    import { DeleteVaccineController }              from "./controllers/pets/DeleteVaccineController";
+    import { DeleExamController }                   from "./controllers/pets/DeleteExamController";
+    import { UpdateVaccineController }              from "./controllers/pets/UpdateVaccineController";
+    import { UpdateExamController }                 from "./controllers/pets/UpdateExamController";
+    import { PublicacoesPetController }             from "./controllers/pets/PublicacoesPetController";
+    import { UpdatePetController }                  from "./controllers/pets/UpdatePetController";
+    import { DeletePubliController }                from "./controllers/pets/DeletePubliController";
+    import { UserDeleteController }                 from "./controllers/user/UserDeleteController";
+    import { UpdatePubliController }                from "./controllers/pets/UpdatePubliController";
+    import { DetailPublicacoesController }          from './controllers/pets/DetailPublicacoesController';
+    import { ServicoController }                    from './clinica-petland/controllers/agendamento/ServicosController';
+    import { HorarioController }                    from './clinica-petland/controllers/agendamento/HorariosController';
+    import { BuscarServicoController }              from './controllers/clinicas/BuscarServicoController';
+    import { BuscarHorarioController }              from './clinica-petland/controllers/agendamento/BuscarHorarioController';
+    import { AgendamentoController }                from './controllers/clinicas/AgendamentoController';
+    import { AtualizacaoHorarioController }         from './controllers/status/AtualizacaoStatusHorarioController';
+    import { StatusAgendamentoController }          from './controllers/status/StatusAgendamentoController';
+    import { ChamarAgendamentoController }          from './controllers/clinicas/ChamarAgendamentoController';
+    import { BuscarHorarioAllController }           from './clinica-petland/controllers/agendamento/BuscarHorariosAll';
+    import { OneAgendamentoController }             from './controllers/clinicas/OneAgendamento';
+    import { BuscarTokenController }                from './controllers/notification/buscaTokenController';
+    import { RegisterTokenController }              from './controllers/notification/registerTokenController';
+    import { TokenAgendamentoController }           from './controllers/notification/ChamarAgendamentoToken';
+    import { SendNotificationController }           from './cron/enviarNotificacao';
+    import { CadastradoClinicaController }          from './clinica-petland/controllers/user/CadastroClinicaController';    
+    import { AuthClinicaController }                from './clinica-petland/controllers/auth/AuthClinicaController';
+    import { DetailClinicaController }              from './clinica-petland/controllers/user/DetailClinicaController';
+    import { GetHorarioController }                 from './clinica-petland/controllers/horarios/GetHorarioController';
+    import { CadastroVeterinarioController }        from './clinica-petland/controllers/veterinarios/CadastroVeterinarioController';
+    import { InfosVeterinarioController }           from './clinica-petland/controllers/veterinarios/InfosVeterinarioController';
+    import { StatusVeterinarioController }          from './clinica-petland/controllers/veterinarios/StatusVeterinarioController';
+    import { PutHorarioController }                 from './clinica-petland/controllers/horarios/PutHorarioController'
+    import { UpdateVeterinarioController }          from './clinica-petland/controllers/veterinarios/UpdateVeterinarioController';
+    import { EnvioFormularioController }            from './clinica-petland/controllers/email/EnvioFormulario';
+    import { CriarConfiguracaoAgendaController }    from './clinica-petland/controllers/agendamento/ConfigAgendaController';
+    import { GerarHorariosMensalController }        from './clinica-petland/controllers/agendamento/GerarHorariosMensalController';
+    import { ServicoPutStatusController }           from './controllers/status/ServicoPutStatusController';
+    import { BuscarTodosServicosController }        from './controllers/buscarServicos/BuscarTodosServicosController'
+    import { ReceitasController }                   from './clinica-petland/controllers/receitas/ReceitasController'
+    import { BuscarReceitaController }              from './clinica-petland/controllers/receitas/BuscarReceitaController'
+    import  uploadConfig                            from './config/multer';
 
     const router = Router();
 
@@ -63,6 +68,8 @@
     const buscarTokenController = new BuscarTokenController();
     const buscarHorarioAllController = new BuscarHorarioAllController();
     const envioFormularioController = new EnvioFormularioController();
+    const criarConfiguracao = new CriarConfiguracaoAgendaController();
+    const gerarHorarios = new GerarHorariosMensalController();
     
 
     router.post('/api/users', new CreateUserController().handle);
@@ -145,9 +152,6 @@
 
     router.post("/api/sendNotification", new SendNotificationController().handle);
 
-
-    // Clinica Petland 
-
     router.post("/api/cadastroClinica", new CadastradoClinicaController().handle);
     
     router.post('/api/clinicaSession', new AuthClinicaController().handle);
@@ -162,9 +166,11 @@
 
     router.put('/api/statusVeterinario/:id/status', isAuthenticated, new StatusVeterinarioController().handle);
 
+    router.put('/api/statusServico/:id/status', isAuthenticated, new ServicoPutStatusController().handle);
+
     router.post('/api/agendarHoraio', isAuthenticated, new HorarioController().handle);
 
-    router.get('/api/buscarHorario/:tipo/:sub_categoria?', isAuthenticated, new BuscarHorarioController().handle);
+    router.get('/api/buscarHorarioPorServico/:servico', isAuthenticated, new BuscarHorarioController().handle);
 
     router.get('/api/all_horarios', isAuthenticated, new BuscarHorarioAllController().handle);
 
@@ -172,11 +178,23 @@
         buscarHorarioAllController.handleAgendamentos(req, res)
     );
 
+    router.get('/api/buscarTodosServicos', isAuthenticated, new BuscarTodosServicosController().handle)
+
     router.put('/api/updateHora', isAuthenticated, new PutHorarioController().handle)
 
     router.put('/api/updateVeterinario', isAuthenticated, new UpdateVeterinarioController().handle)
 
     router.post('/api/envioFormulario', envioFormularioController.handle)
+
+    router.post('/api/configurarAgenda' , criarConfiguracao.handle)
+
+    router.post('/api/gerarHorarios', gerarHorarios.handle);
+
+    router.post('/api/receitas', isAuthenticated, new ReceitasController().gerarReceita)
+
+    router.get('/api/buscarReceita/:id', isAuthenticated, new BuscarReceitaController().handle)
+
+
 
     
     export { router };

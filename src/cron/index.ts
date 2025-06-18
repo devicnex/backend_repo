@@ -4,7 +4,7 @@ import { cancelaHorarioCron } from './cancelaHorario';
 import { deleteHorarioCron } from './deleteHorario';
 
 export const iniciarCron = () => {
-    console.log("Iniciando o Cron");
+    console.log("---------- Rodando o Cron ----------");
     lembreteCron.start();
     prevencaoLembrete.start();
     cancelaHorarioCron.start();

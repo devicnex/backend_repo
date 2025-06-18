@@ -189,28 +189,17 @@ model Agendamentos {
   @@map("agendamentos")
 }
 
-
-model Servicos {
-  id String @id @default(uuid())
-  nome String
-  tipo Int
-  status Int
-  agendamentos Agendamentos[]
-
-  @@map("servicos")
-}
-
 model Horarios {
   id String @id @default(uuid())
   seq_id Int @unique
-  tipo Int
-  sub_categoria String?
   id_clinica String
   data_servico String
   horario_servico String
+  id_servico String
   status Int
   id_veterinario String
   clinicas    Clinica @relation(fields: [id_clinica], references: [id])
+  servico     Servicos @relation(fields: [id_servico], references: [id])
   veterinario Veterinarios @relation(fields: [id_veterinario], references: [id])
   agendamentos Agendamentos[]
   
@@ -256,7 +245,24 @@ model Clinica {
   veterinarios Veterinarios[]
   agendamentos Agendamentos[]
   horarios Horarios[]
+  servicos Servicos[]
 }
+
+model Servicos {
+  id          String   @id @default(uuid())
+  seq_id      Int
+  servico     String
+  tempo       String
+  clinica_id  String
+  status      Int      @default(1)
+  created_at  DateTime @default(now())
+  clinica     Clinica  @relation(fields: [clinica_id], references: [id])
+  agendamentos Agendamentos[]
+  horarios Horarios[]
+
+  @@map("servicos")
+}
+
 
 model Veterinarios {
   id String @id @default(uuid())
@@ -272,6 +278,39 @@ model Veterinarios {
   updated_at  DateTime? @default(now())
   clinica Clinica @relation(fields: [clinica_id], references: [id])
   horarios Horarios[]
+  receitas Receitas[]
   
   @@map("veterinarios")
+}
+
+
+model ConfigAgenda {
+  id           String   @id @default(uuid())
+  id_clinica   String
+  dia_semana   Int  
+  inicio_turno String   
+  fim_turno    String   
+  servico      Int      
+  ignorar_horarios  String   @default("")
+  created_at   DateTime @default(now())
+
+  @@map("configAgenda")
+}
+
+model Receitas {
+  id             String @id @default(uuid())
+  tutorNome      String
+  tutorCPF       String
+  petNome        String
+  especie        String
+  raca           String
+  sexo           String
+  peso           String
+  uso            String
+  pdfUrl         String
+  id_veterinario String
+  dataCriacao    DateTime @default(now())
+  veterinario Veterinarios @relation(fields: [id_veterinario], references: [id])
+
+  @@map("receitas")
 }

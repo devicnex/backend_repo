@@ -12,7 +12,7 @@ const smtp = nodemailer.createTransport({
 });
 
 function createResetPasswordHtml(id) {
-    const url = `http://servidor:3000/auth/auth1/reset-password?id=${id}`;
+    const url = `https://petland.vet.br/auth/auth1/reset-password?id=${id}`;
     return `
     <html>
         <head>

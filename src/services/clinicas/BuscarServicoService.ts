@@ -1,13 +1,13 @@
 import prismaClient from "../../prisma";
 
 class BuscarServicoService {
-    async execute(){
+    async handle(clinica_id: string){
         const detail = await prismaClient.servicos.findMany({
-            select: {
-                id: true,
-                nome: true,
-                tipo: true,
-                status: true
+            where:{
+                clinica_id: clinica_id
+            },
+            orderBy:{
+                seq_id: 'desc'
             }
         })
         return detail

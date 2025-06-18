@@ -29,7 +29,7 @@ const converterParaData = (dataString: string, horario: string): Date => {
         throw new Error(`❌ Erro ao converter data: ${dataString} ${horario}`);
     }
 
-    console.log(`📆 Data convertida com sucesso: ${dataConvertida}`);
+    // console.log(`📆 Data convertida com sucesso: ${dataConvertida}`);
     return dataConvertida;
 };
 
@@ -76,7 +76,7 @@ export const lembreteCron = cron.schedule("* * * * *", async () => {
             }
 
             // 🔹 Log para depuração da conversão de data
-            console.log(`📅 Agendamento ID ${agendamento.id} → Exame: ${dataAgendamento} | Agora: ${agora}`);
+            // console.log(`📅 Agendamento ID ${agendamento.id} → Exame: ${dataAgendamento} | Agora: ${agora}`);
 
             const diferencaEmMs = dataAgendamento.getTime() - agora.getTime();
             const diferencaEmMinutos = diferencaEmMs / (1000 * 60); // Converte para minutos
@@ -92,7 +92,7 @@ export const lembreteCron = cron.schedule("* * * * *", async () => {
             }
 
             if (!lembreteSelecionado) {
-                console.log(`🕒 Nenhuma notificação precisa ser enviada para ID ${agendamento.id}`);
+                // console.log(`🕒 Nenhuma notificação precisa ser enviada para ID ${agendamento.id}`);
                 continue;
             }
 

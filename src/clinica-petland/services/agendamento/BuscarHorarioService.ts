@@ -1,20 +1,20 @@
 import prismaClient from "../../../prisma";
 
 class BuscarHorarioService {
-    async execute(tipo: number, sub_categoria: string | null) {
-        const whereClause: any = { 
-            tipo,
-            status: 1
-        };
-
-        if (sub_categoria) {
-            whereClause.sub_categoria = sub_categoria;
-        }
+    async execute(servico: string) {
 
         const horario = await prismaClient.horarios.findMany({
-            where: whereClause,
+            where: {
+                status: 1,
+                servico: {
+                    servico: {
+                        contains: servico,
+                    }
+                }
+            },
             include: {
-                clinicas: true,
+                clinicas: true, 
+                servico: true,
                 veterinario: true,
             }
         });
@@ -27,5 +27,3 @@ class BuscarHorarioService {
 
 
 export { BuscarHorarioService };
-
-

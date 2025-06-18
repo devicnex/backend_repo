@@ -25,6 +25,7 @@ export class BuscarHorarioAllService {
                     }
                 },
                 veterinario: true,
+                servico: true
             } ,
             orderBy: {
                 seq_id: 'desc'
