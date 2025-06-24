@@ -25,7 +25,7 @@ export const ReceitasService = async (data: {
   const fileName = `${id}.pdf`;
   const dirPath = path.join(process.cwd(), 'tmp', 'receitas');
   const filePath = path.join(dirPath, fileName);
-  const publicUrl = `http://192.168.1.200:3333/tmp/receitas/${fileName}`;
+  const publicUrl = `https://clinica.petland.vet.br/tmp/receitas/${fileName}`;
 
   if (!fs.existsSync(dirPath)) fs.mkdirSync(dirPath, { recursive: true });
 

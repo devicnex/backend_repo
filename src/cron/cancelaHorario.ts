@@ -3,7 +3,7 @@ import prismaClient from "../prisma";
 
 // Função auxiliar para verificar se está expirado
 const estaExpirado = (data: string, hora: string): boolean => {
-    const [dia, mes, ano] = data.split('/').map(Number);
+    const [ano, mes, dia] = data.split('-').map(Number);
     const [horas, minutos] = hora.split(':').map(Number);
     const dataHorario = new Date(ano, mes - 1, dia, horas, minutos, 0);
     return dataHorario.getTime() < new Date().getTime();

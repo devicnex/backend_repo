@@ -11,7 +11,8 @@ export class OneAgendamentoService {
                 include: {
                     pets: true,
                     horarios: true,
-                    clinicas: true, 
+                    clinicas: true,
+                    veterinarios: true,
                     servicos: true,
                 }
             })

@@ -170,6 +170,7 @@ model Agendamentos {
   pet_id         String
   id_horario     String
   id_clinica     String
+  id_veterinario String
   id_servico     String
   user_id        String
   data_agendamento String
@@ -180,6 +181,7 @@ model Agendamentos {
   users           User      @relation(fields: [user_id], references: [id])
   horarios        Horarios  @relation(fields: [id_horario], references: [id])
   clinicas        Clinica   @relation(fields: [id_clinica], references: [id])
+  veterinarios    Veterinarios @relation(fields: [id_veterinario], references: [id])
   servicos        Servicos  @relation(fields: [id_servico], references: [id])
   @@index([pet_id], map: "agendamento_pet_id_fkey")
   @@index([user_id], map: "agendamento_user_id_fkeyge")
@@ -279,6 +281,7 @@ model Veterinarios {
   clinica Clinica @relation(fields: [clinica_id], references: [id])
   horarios Horarios[]
   receitas Receitas[]
+  agendamentos Agendamentos[]
   
   @@map("veterinarios")
 }
